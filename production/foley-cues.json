@@ -464,6 +464,14 @@
       "pan_end": -0.3,
       "duration": 0.68,
       "note": "Complete horizontal page push including header, title, content, cards and footer"
+    },
+    {
+      "time": 31.58,
+      "type": "paper_tap",
+      "gain": 0.045,
+      "pan": 0.32,
+      "duration": 0.1,
+      "note": "A short tactile mark as the two-stroke red cross completes over the document workflow"
     }
   ],
   "notes": "Original action-sound timbres retained. Later events shift 3 seconds earlier; the camera swell follows the new 0.6-second push."

@@ -1,7 +1,7 @@
 /* One pre-mixed stereo soundtrack. The media clock also drives the picture. */
 (() => {
   "use strict";
-  const TRACK_SOURCE = "assets/film-soundtrack.mp3?v=16";
+  const TRACK_SOURCE = "assets/film-soundtrack.mp3?v=17";
 
   class InboxFilmSound {
     constructor({ duration = 114, source = TRACK_SOURCE } = {}) {

@@ -471,11 +471,12 @@
     const q=t-7;
     if(t<7){
       lines(["多台电脑来回切换，","记录也未必能一直留下。"],110,188,53,C.ink,600,1.4);
-      lines(["我常在 Mac、Windows 和 Linux 之间传文件，","却要在聊天软件里来回切换登录。"],114,405,25,C.muted,400,1.9);
+      lines(["我常在 Mac、Windows 和 Linux 之间传文件。","用微信、QQ 时，同一个账号","只能同时登录一台电脑，只好来回切换。"],114,400,25,C.muted,400,1.8);
       lines(["微信要自己保留、备份和迁移本地记录；","QQ 的云端漫游，也有期限和内容范围。"],114,549,23,C.muted,400,1.9);
       text("即使是飞书，免费版也只能查看最近 18 个月的记录。",114,699,18,"#8b9b7b");
       const names=["macOS","Windows","Linux"],centres=[918,1136,1354];
       const current=Math.min(2,Math.floor(Math.max(0,t-.45)/.95));
+      text("微信 / QQ · 同一账号，电脑端仅一台在线",1136,247,21,C.green,500,"center");
       centres.forEach((cx,i)=>{
         drawDevice(cx-92,306,184,171,names[i],i===0?"laptop":"desktop",i===current);
         rr(cx-76,513,152,43,10,i===current?C.green:"#e6ecdd");
@@ -512,6 +513,11 @@
           text(label,1220,550+i*38,18,"#81936e");
         });
       },10,.22);
+      const crossA=clamp((q-1.32)/.13),crossB=clamp((q-1.45)/.13);
+      ctx.save();ctx.lineCap="round";
+      if(crossA>0)line(1056,541,lerp(1056,1144,crossA),lerp(541,629,crossA),"#bb6656",7);
+      if(crossB>0)line(1144,541,lerp(1144,1056,crossB),lerp(541,629,crossB),"#bb6656",7);
+      ctx.restore();
       text("记录示意",1465,689,11,"#a1ae94",400,"right");
     }
   }
@@ -1102,7 +1108,7 @@
     {start:0,end:3,label:"开篇",description:"这是对一个项目设想的描述，不是项目名称。",sourceTimes:[[0.0,0],[2.175,2.9],[3,9]],draw:sceneTitle},
     {start:3,end:14,label:"我和文件传输助手",description:"我经常给自己发消息。除了文件，还会直接发送备忘、记录、文案、讲稿和单词。",sourceTimes:[[0.0,0],[3.006667,4.1],[3.373333,8.1],[3.666667,8.5],[6.673333,12.6],[7.04,17.1],[7.333333,17.5],[10.34,21.6],[11,27]],draw:sceneOrigin},
     {start:14,end:23,label:"零碎的生活记录",description:"我会留下喜欢的摄影作品、想看的书和电影、想补的番；零碎消息也成了生活记录。",sourceTimes:[[0.0,0],[2.3625,4.35],[3.0,7],[5.3625,11.35],[6.0,14],[8.3625,18.35],[9,21]],draw:sceneMemory},
-    {start:23,end:34,label:"现有方案的不便",description:"多电脑切换登录、本地记录需要保留与迁移、云端漫游有期限和范围；飞书仅作补充例子。记录灵感时，希望少一些新建文档与分类的步骤。",sourceTimes:[[0,0],[11,11]],draw:sceneFriction},
+    {start:23,end:34,label:"现有方案的不便",description:"我用微信、QQ 时同一账号只能同时登录一台电脑、本地记录需要保留与迁移、云端漫游有期限和范围；飞书仅作补充例子。记录灵感时，希望少一些新建文档与分类的步骤。",sourceTimes:[[0,0],[11,11]],draw:sceneFriction},
     {start:34,end:40,label:"想自己做一个",description:"macOS、Windows 和 Linux 分别连接云端，找回完整历史记录。",sourceTimes:[[0.0,0],[3.75,5],[4.65,11.5],[6,18]],draw:sceneNeed},
     {start:40,end:47,label:"核心理念",description:"九种用途沿各自路径成为消息，共同进入唯一聊天入口，保留在同一条时间线。",sourceTimes:[[0,0],[5.85,11.15],[6.45,13.75],[7,18]],draw:scenePurposes},
     {start:47,end:51,label:"给自己发消息",description:"原案中的八条文字和文件消息，以及建筑摄影。",sourceTimes:[[0,0],[4,4]],draw:sceneChat},
