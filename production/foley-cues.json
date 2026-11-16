@@ -1,5 +1,5 @@
 {
-  "duration": 114,
+  "duration": 108,
   "voiceover": false,
   "events": [
     {
@@ -8,23 +8,32 @@
       "gain": 0.08,
       "pan": -0.1,
       "duration": 0.16,
-      "note": "Opening icon settling; one tactile soft attack, not a logo sting"
+      "note": "Opening icon settling; one tactile soft attack, not a logo sting",
+      "seed_index": 0
     },
     {
       "time": 3.704,
-      "type": "paper_tap",
-      "gain": 0.07,
+      "type": "felt_arrival",
+      "gain": 0.036,
       "pan": 0.35,
-      "duration": 0.13,
-      "note": "First file card comes to rest"
+      "duration": 0.06,
+      "note": "Short dry soft file contact; no paper scrape or room tail",
+      "seed_index": 1,
+      "variation": 0,
+      "contact_gain": 1.0,
+      "room_send": 0.0
     },
     {
       "time": 4.730667,
-      "type": "paper_tap",
-      "gain": 0.065,
+      "type": "felt_arrival",
+      "gain": 0.035,
       "pan": 0.25,
-      "duration": 0.14,
-      "note": "ZIP card; no literal clothing zipper"
+      "duration": 0.06,
+      "note": "Short dry soft file contact; no paper scrape or room tail",
+      "seed_index": 2,
+      "variation": 0,
+      "contact_gain": 1.0,
+      "room_send": 0.0
     },
     {
       "time": 6.546667,
@@ -32,7 +41,8 @@
       "gain": 0.07,
       "pan": 0.3,
       "duration": 0.25,
-      "pan_end": 0.05
+      "pan_end": 0.05,
+      "seed_index": 3
     },
     {
       "time": 10.203333,
@@ -40,7 +50,8 @@
       "gain": 0.055,
       "pan": 0.25,
       "duration": 0.25,
-      "pan_end": 0.05
+      "pan_end": 0.05,
+      "seed_index": 4
     },
     {
       "time": 14.14,
@@ -48,7 +59,8 @@
       "gain": 0.07,
       "pan": 0.35,
       "duration": 0.19,
-      "note": "The photo is displayed, not taken: no camera shutter"
+      "note": "The photo is displayed, not taken: no camera shutter",
+      "seed_index": 5
     },
     {
       "time": 16.88,
@@ -56,7 +68,8 @@
       "gain": 0.06,
       "pan": 0.3,
       "duration": 0.25,
-      "pan_end": 0.05
+      "pan_end": 0.05,
+      "seed_index": 6
     },
     {
       "time": 19.88,
@@ -64,7 +77,8 @@
       "gain": 0.055,
       "pan": 0.28,
       "duration": 0.24,
-      "pan_end": 0.05
+      "pan_end": 0.05,
+      "seed_index": 7
     },
     {
       "time": 35.05,
@@ -72,7 +86,8 @@
       "gain": 0.06,
       "pan": 0,
       "duration": 0.75,
-      "note": "Cloud node opening; no heavenly sparkle"
+      "note": "Cloud node opening; no heavenly sparkle",
+      "seed_index": 8
     },
     {
       "time": 37.525,
@@ -81,7 +96,8 @@
       "pan": -0.15,
       "duration": 1.1,
       "pan_end": 0.15,
-      "note": "One restrained network connection layer, no packet ticks"
+      "note": "One restrained network connection layer, no packet ticks",
+      "seed_index": 9
     },
     {
       "time": 40.12,
@@ -89,390 +105,470 @@
       "gain": 0.05,
       "pan": -0.15,
       "duration": 0.16,
-      "note": "Core grid; the music introduces the pulse here"
+      "note": "Core grid; the music introduces the pulse here",
+      "seed_index": 10
     },
     {
-      "time": 41.2,
+      "time": 40.67,
       "type": "fusion_stream",
       "gain": 0.07,
       "pan": -0.48,
-      "duration": 4.53,
+      "duration": 2.76,
       "pan_end": 0.52,
       "pulse_starts": [
         0.0,
-        0.36,
-        0.72,
-        1.08,
-        1.44,
-        1.8,
-        2.16,
-        2.52,
-        2.88
+        0.22,
+        0.44,
+        0.66,
+        0.88,
+        1.1,
+        1.32,
+        1.54,
+        1.76
       ],
-      "pulse_duration": 1.65,
-      "note": "ONE coherent airy movement, shaped by nine overlapping journeys; not nine loud whooshes"
+      "pulse_duration": 1.0,
+      "note": "ONE coherent airy movement, shaped by nine overlapping journeys; not nine loud whooshes",
+      "seed_index": 11
     },
     {
-      "time": 42.85,
-      "type": "felt_arrival",
-      "gain": 0.038,
-      "pan": 0.48,
-      "duration": 0.075,
-      "variation": 0,
-      "note": "Very short, damped woody contact; no notification pitch"
-    },
-    {
-      "time": 43.21,
-      "type": "felt_arrival",
-      "gain": 0.04,
-      "pan": 0.48,
-      "duration": 0.075,
-      "variation": 1,
-      "note": "Very short, damped woody contact; no notification pitch"
-    },
-    {
-      "time": 43.57,
-      "type": "felt_arrival",
-      "gain": 0.041999999999999996,
-      "pan": 0.48,
-      "duration": 0.075,
-      "variation": 2,
-      "note": "Very short, damped woody contact; no notification pitch"
-    },
-    {
-      "time": 43.93,
-      "type": "felt_arrival",
-      "gain": 0.044,
-      "pan": 0.48,
-      "duration": 0.075,
-      "variation": 3,
-      "note": "Very short, damped woody contact; no notification pitch"
-    },
-    {
-      "time": 44.29,
-      "type": "felt_arrival",
-      "gain": 0.046,
-      "pan": 0.48,
-      "duration": 0.075,
-      "variation": 4,
-      "note": "Very short, damped woody contact; no notification pitch"
-    },
-    {
-      "time": 44.65,
-      "type": "felt_arrival",
-      "gain": 0.048,
-      "pan": 0.48,
-      "duration": 0.075,
-      "variation": 5,
-      "note": "Very short, damped woody contact; no notification pitch"
-    },
-    {
-      "time": 45.01,
-      "type": "felt_arrival",
-      "gain": 0.05,
-      "pan": 0.48,
-      "duration": 0.075,
-      "variation": 6,
-      "note": "Very short, damped woody contact; no notification pitch"
-    },
-    {
-      "time": 45.37,
-      "type": "felt_arrival",
-      "gain": 0.052,
-      "pan": 0.48,
-      "duration": 0.075,
-      "variation": 7,
-      "note": "Very short, damped woody contact; no notification pitch"
-    },
-    {
-      "time": 45.73,
-      "type": "felt_arrival",
-      "gain": 0.054,
-      "pan": 0.48,
-      "duration": 0.075,
-      "variation": 8,
-      "note": "Very short, damped woody contact; no notification pitch"
-    },
-    {
-      "time": 45.13,
+      "time": 41.05,
       "type": "perspective_bloom",
       "gain": 0.047,
       "pan": 0.4,
-      "duration": 0.6,
+      "duration": 0.55,
       "pan_end": 0.1,
-      "note": "Final 0.6 seconds of concurrent window growth, settling with the last arrival"
+      "note": "Final 0.6 seconds of concurrent window growth, settling with the last arrival",
+      "seed_index": 21
     },
     {
-      "time": 47.15,
+      "time": 41.73,
       "type": "felt_arrival",
       "gain": 0.047,
       "pan": 0.46,
       "duration": 0.085,
       "variation": 0,
       "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails",
-      "contact_gain": 1.65
+      "contact_gain": 1.65,
+      "seed_index": 22
     },
     {
-      "time": 47.49,
+      "time": 41.95,
       "type": "felt_arrival",
       "gain": 0.044,
       "pan": 0.46,
       "duration": 0.085,
       "variation": 1,
       "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails",
-      "contact_gain": 1.65
+      "contact_gain": 1.65,
+      "seed_index": 23
     },
     {
-      "time": 47.83,
+      "time": 42.17,
       "type": "felt_arrival",
       "gain": 0.04,
       "pan": 0.46,
       "duration": 0.085,
       "variation": 2,
       "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails",
-      "contact_gain": 1.65
+      "contact_gain": 1.65,
+      "seed_index": 24
     },
     {
-      "time": 48.17,
-      "type": "paper_tap",
-      "gain": 0.052,
+      "time": 42.39,
+      "type": "felt_arrival",
+      "gain": 0.035,
       "pan": 0.46,
-      "duration": 0.085,
-      "variation": 3,
-      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails",
-      "contact_gain": 1.35
+      "duration": 0.06,
+      "variation": 0,
+      "note": "Short dry soft file contact; no paper scrape or room tail",
+      "contact_gain": 1.0,
+      "seed_index": 25,
+      "room_send": 0.0
     },
     {
-      "time": 48.51,
+      "time": 42.61,
       "type": "photo_paper",
       "gain": 0.058,
       "pan": 0.46,
       "duration": 0.13,
       "variation": 4,
       "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails",
-      "contact_gain": 0.9
+      "contact_gain": 0.9,
+      "seed_index": 26
     },
     {
-      "time": 48.85,
+      "time": 42.83,
       "type": "felt_arrival",
       "gain": 0.043,
       "pan": 0.46,
       "duration": 0.085,
       "variation": 5,
       "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails",
-      "contact_gain": 1.35
+      "contact_gain": 1.35,
+      "seed_index": 27
     },
     {
-      "time": 49.19,
+      "time": 43.05,
       "type": "felt_arrival",
       "gain": 0.046,
       "pan": 0.46,
       "duration": 0.085,
       "variation": 6,
       "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails",
-      "contact_gain": 1.35
+      "contact_gain": 1.35,
+      "seed_index": 28
     },
     {
-      "time": 49.53,
+      "time": 43.27,
       "type": "felt_arrival",
       "gain": 0.043,
       "pan": 0.46,
       "duration": 0.085,
       "variation": 7,
       "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails",
-      "contact_gain": 1.35
+      "contact_gain": 1.35,
+      "seed_index": 29
     },
     {
-      "time": 49.87,
-      "type": "paper_tap",
-      "gain": 0.055,
+      "time": 43.49,
+      "type": "felt_arrival",
+      "gain": 0.036,
       "pan": 0.46,
-      "duration": 0.085,
-      "variation": 8,
-      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails",
-      "contact_gain": 1.35
+      "duration": 0.06,
+      "variation": 0,
+      "note": "Short dry soft file contact; no paper scrape or room tail",
+      "contact_gain": 1.0,
+      "seed_index": 30,
+      "room_send": 0.0
     },
     {
-      "time": 51.1,
+      "time": 47.1,
       "type": "warm_boundary",
       "gain": 0.065,
       "pan": 0,
       "duration": 0.32,
-      "note": "New dark section; restrained low-mid contact, not a trailer impact"
+      "note": "New dark section; restrained low-mid contact, not a trailer impact",
+      "seed_index": 31
     },
     {
-      "time": 53.025,
+      "time": 48.65,
       "type": "air_link",
       "gain": 0.04,
       "pan": -0.3,
       "duration": 0.8,
-      "pan_end": 0.25
+      "pan_end": 0.25,
+      "seed_index": 32
     },
     {
-      "time": 58.785,
+      "time": 53.53,
       "type": "felt_arrival",
       "gain": 0.055,
       "pan": -0.34,
       "duration": 0.1,
-      "variation": 2
+      "variation": 2,
+      "seed_index": 33
     },
     {
-      "time": 59.065,
+      "time": 53.89,
       "type": "felt_arrival",
       "gain": 0.055,
       "pan": 0.34,
       "duration": 0.1,
-      "variation": 4
+      "variation": 4,
+      "seed_index": 34
     },
     {
-      "time": 60.92,
+      "time": 51.92,
       "type": "paper_glide",
       "gain": 0.06,
       "pan": 0,
       "duration": 0.66,
       "pan_end": 0.06,
-      "note": "Two extraction cards move together into the grid"
+      "note": "Two extraction cards move together into the grid",
+      "seed_index": 35
     },
     {
-      "time": 62.53,
+      "time": 55.57,
       "type": "soft_settle",
       "gain": 0.045,
       "pan": 0,
       "duration": 0.2,
-      "note": "Grid completes; no celebratory chime"
+      "note": "Grid completes; no celebratory chime",
+      "seed_index": 36
     },
     {
-      "time": 68.5,
+      "time": 62.5,
       "type": "paper_glide",
       "gain": 0.045,
       "pan": 0.05,
       "duration": 0.28,
-      "note": "Local card-label swap only"
+      "note": "Local card-label swap only",
+      "seed_index": 37
     },
     {
-      "time": 76.675,
+      "time": 70.675,
       "type": "air_link",
       "gain": 0.05,
       "pan": -0.38,
       "duration": 1.15,
       "pan_end": 0.4,
-      "note": "Single broad fan-out sound, not six high pings"
+      "note": "Single broad fan-out sound, not six high pings",
+      "seed_index": 38
     },
     {
-      "time": 78.355,
+      "time": 72.355,
       "type": "paper_tap",
       "gain": 0.045,
       "pan": 0.45,
       "duration": 0.13,
-      "note": "Self-hosting note settles"
+      "note": "Self-hosting note settles",
+      "seed_index": 39
     },
     {
-      "time": 81.58125,
+      "time": 75.58125,
       "type": "felt_low",
       "gain": 0.045,
       "pan": 0.3,
       "duration": 0.12,
-      "note": "Identity module settled; calm and neutral"
+      "note": "Identity module settled; calm and neutral",
+      "seed_index": 40
     },
     {
-      "time": 83.265625,
+      "time": 77.265625,
       "type": "soft_settle",
       "gain": 0.038,
       "pan": 0.3,
       "duration": 0.14,
-      "note": "Session devices complete, no login-success notification"
+      "note": "Session devices complete, no login-success notification",
+      "seed_index": 41
     },
     {
-      "time": 85.5,
+      "time": 79.5,
       "type": "air_link",
       "gain": 0.035,
       "pan": 0.1,
       "duration": 0.8,
       "pan_end": 0.3,
-      "note": "HTTPS section connection; do not sonify every packet loop"
+      "note": "HTTPS section connection; do not sonify every packet loop",
+      "seed_index": 42
     },
     {
-      "time": 92.12,
+      "time": 86.12,
       "type": "soft_settle",
       "gain": 0.035,
       "pan": 0,
       "duration": 0.16,
-      "note": "AI processing boundary; no alarm"
+      "note": "AI processing boundary; no alarm",
+      "seed_index": 43
     },
     {
-      "time": 96.594984,
+      "time": 90.594984,
       "type": "felt_low",
       "gain": 0.045,
       "pan": 0,
-      "duration": 0.14
+      "duration": 0.14,
+      "seed_index": 44
     },
     {
-      "time": 97.791222,
+      "time": 91.791222,
       "type": "soft_settle",
       "gain": 0.04,
       "pan": 0,
-      "duration": 0.18
+      "duration": 0.18,
+      "seed_index": 45
     },
     {
-      "time": 99.654545,
+      "time": 93.654545,
       "type": "paper_slide",
       "gain": 0.045,
       "pan": 0,
       "duration": 0.25,
-      "pan_end": 0.08
+      "pan_end": 0.08,
+      "seed_index": 46
     },
     {
-      "time": 103.566667,
+      "time": 97.566667,
       "type": "felt_arrival",
       "gain": 0.039,
       "pan": 0,
       "duration": 0.085,
       "variation": 0,
-      "note": "Only three of five milestones receive faint contact sounds"
+      "note": "Only three of five milestones receive faint contact sounds",
+      "seed_index": 47
     },
     {
-      "time": 105.033333,
+      "time": 99.033333,
       "type": "felt_arrival",
       "gain": 0.039,
       "pan": 0,
       "duration": 0.085,
       "variation": 2,
-      "note": "Only three of five milestones receive faint contact sounds"
+      "note": "Only three of five milestones receive faint contact sounds",
+      "seed_index": 48
     },
     {
-      "time": 106.5,
+      "time": 100.5,
       "type": "felt_arrival",
       "gain": 0.039,
       "pan": 0,
       "duration": 0.085,
       "variation": 4,
-      "note": "Only three of five milestones receive faint contact sounds"
+      "note": "Only three of five milestones receive faint contact sounds",
+      "seed_index": 49
     },
     {
-      "time": 109.25,
+      "time": 103.25,
       "type": "closing_settle",
       "gain": 0.05,
       "pan": 0,
       "duration": 0.22,
-      "note": "Soft return, not a brand lock-up or triumph"
+      "note": "Soft return, not a brand lock-up or triumph",
+      "seed_index": 50
     },
     {
-      "time": 63.575,
-      "type": "paper_glide",
-      "gain": 0.04,
+      "time": 57.575,
+      "type": "card_fan",
+      "gain": 0.032,
       "pan": 0.3,
       "pan_end": -0.3,
-      "duration": 0.78,
-      "note": "Staggered masked slides: six cards leave and arrive separately while the top bar stays fixed"
+      "duration": 0.8,
+      "note": "One fanning gesture; six brush peaks align to incoming-card midpoints, with per-leaf left/middle/right positions",
+      "seed_index": 51,
+      "room_send": 0.035,
+      "edge_attack": 0.007,
+      "edge_release": 0.025,
+      "leaf_peaks": [
+        0.32,
+        0.39,
+        0.46,
+        0.53,
+        0.6,
+        0.67
+      ],
+      "leaf_pans": [
+        -0.35,
+        0,
+        0.35,
+        -0.35,
+        0,
+        0.35
+      ]
     },
     {
-      "time": 31.58,
-      "type": "paper_tap",
-      "gain": 0.045,
-      "pan": 0.32,
-      "duration": 0.1,
-      "note": "A short tactile mark as the two-stroke red cross completes over the document workflow"
+      "time": 31.32,
+      "type": "felt_marker",
+      "gain": 0.022,
+      "pan": 0.28,
+      "duration": 0.095,
+      "note": "First short dry felt-nib stroke of the red cross; no impact or error tone",
+      "seed_index": 52,
+      "pan_end": 0.37,
+      "room_send": 0.0,
+      "edge_attack": 0.005,
+      "edge_release": 0.008
+    },
+    {
+      "time": 52.8,
+      "type": "air_link",
+      "gain": 0.018000000000000002,
+      "pan": -0.3,
+      "duration": 0.8,
+      "pan_end": 0.25,
+      "seed_index": 32,
+      "note": "Second cloud-bound message pass; same air texture at 45% gain"
+    },
+    {
+      "time": 73.72,
+      "type": "air_link",
+      "gain": 0.012,
+      "pan": -0.18,
+      "pan_end": 0.18,
+      "duration": 0.64,
+      "seed_index": 32,
+      "note": "Very light air accompanying the chapter background brush; no impact accent"
+    },
+    {
+      "time": 84.72,
+      "type": "air_link",
+      "gain": 0.012,
+      "pan": -0.18,
+      "pan_end": 0.18,
+      "duration": 0.64,
+      "seed_index": 32,
+      "note": "Very light air accompanying the chapter background brush; no impact accent"
+    },
+    {
+      "time": 96.72,
+      "type": "air_link",
+      "gain": 0.012,
+      "pan": -0.18,
+      "pan_end": 0.18,
+      "duration": 0.64,
+      "seed_index": 32,
+      "note": "Very light air accompanying the chapter background brush; no impact accent"
+    },
+    {
+      "time": 102.72,
+      "type": "air_link",
+      "gain": 0.012,
+      "pan": -0.18,
+      "pan_end": 0.18,
+      "duration": 0.64,
+      "seed_index": 32,
+      "note": "Very light air accompanying the chapter background brush; no impact accent"
+    },
+    {
+      "time": 31.45,
+      "type": "felt_marker",
+      "gain": 0.024,
+      "pan": 0.38,
+      "pan_end": 0.27,
+      "duration": 0.14,
+      "seed_index": 54,
+      "room_send": 0.0,
+      "edge_attack": 0.005,
+      "edge_release": 0.008,
+      "note": "Second longer dry felt-nib stroke of the red cross"
+    },
+    {
+      "time": 24.14,
+      "type": "tension_drag",
+      "gain": 0.019,
+      "pan": 0.15,
+      "pan_end": 0.42,
+      "duration": 0.14,
+      "seed_index": 55,
+      "room_send": 0.0,
+      "edge_attack": 0.006,
+      "edge_release": 0.012,
+      "note": "A short strap tension gesture ending exactly on the online-device switch; first cycle only"
+    },
+    {
+      "time": 24.92,
+      "type": "tension_drag",
+      "gain": 0.018,
+      "pan": 0.42,
+      "pan_end": 0.68,
+      "duration": 0.14,
+      "seed_index": 56,
+      "room_send": 0.0,
+      "edge_attack": 0.006,
+      "edge_release": 0.012,
+      "note": "A short strap tension gesture ending exactly on the online-device switch; first cycle only"
+    },
+    {
+      "time": 25.7,
+      "type": "tension_drag",
+      "gain": 0.017,
+      "pan": 0.68,
+      "pan_end": 0.42,
+      "duration": 0.14,
+      "seed_index": 57,
+      "room_send": 0.0,
+      "edge_attack": 0.006,
+      "edge_release": 0.012,
+      "note": "A short strap tension gesture ending exactly on the online-device switch; first cycle only"
     }
   ],
-  "notes": "Original action-sound timbres retained. Later events shift 3 seconds earlier; the camera swell follows the new 0.6-second push."
+  "notes": "108-second timeline. Original action-sound gains and seeds retained; shorter fusion, repeated cloud transfer, and later cues follow the picture edit."
 }
