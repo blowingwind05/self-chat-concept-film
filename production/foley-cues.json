@@ -1,5 +1,5 @@
 {
-  "duration": 106,
+  "duration": 114,
   "voiceover": false,
   "events": [
     {
@@ -67,7 +67,7 @@
       "pan_end": 0.05
     },
     {
-      "time": 24.05,
+      "time": 32.05,
       "type": "soft_bloom",
       "gain": 0.06,
       "pan": 0,
@@ -75,7 +75,7 @@
       "note": "Cloud node opening; no heavenly sparkle"
     },
     {
-      "time": 26.525,
+      "time": 34.525,
       "type": "air_link",
       "gain": 0.045,
       "pan": -0.15,
@@ -84,7 +84,7 @@
       "note": "One restrained network connection layer, no packet ticks"
     },
     {
-      "time": 29.12,
+      "time": 37.12,
       "type": "felt_key",
       "gain": 0.05,
       "pan": -0.15,
@@ -92,7 +92,7 @@
       "note": "Core grid; the music introduces the pulse here"
     },
     {
-      "time": 30.2,
+      "time": 38.2,
       "type": "fusion_stream",
       "gain": 0.07,
       "pan": -0.48,
@@ -113,7 +113,7 @@
       "note": "ONE coherent airy movement, shaped by nine overlapping journeys; not nine loud whooshes"
     },
     {
-      "time": 31.85,
+      "time": 39.85,
       "type": "felt_arrival",
       "gain": 0.038,
       "pan": 0.48,
@@ -122,7 +122,7 @@
       "note": "Very short, damped woody contact; no notification pitch"
     },
     {
-      "time": 32.21,
+      "time": 40.21,
       "type": "felt_arrival",
       "gain": 0.04,
       "pan": 0.48,
@@ -131,7 +131,7 @@
       "note": "Very short, damped woody contact; no notification pitch"
     },
     {
-      "time": 32.57,
+      "time": 40.57,
       "type": "felt_arrival",
       "gain": 0.041999999999999996,
       "pan": 0.48,
@@ -140,7 +140,7 @@
       "note": "Very short, damped woody contact; no notification pitch"
     },
     {
-      "time": 32.93,
+      "time": 40.93,
       "type": "felt_arrival",
       "gain": 0.044,
       "pan": 0.48,
@@ -149,7 +149,7 @@
       "note": "Very short, damped woody contact; no notification pitch"
     },
     {
-      "time": 33.29,
+      "time": 41.29,
       "type": "felt_arrival",
       "gain": 0.046,
       "pan": 0.48,
@@ -158,7 +158,7 @@
       "note": "Very short, damped woody contact; no notification pitch"
     },
     {
-      "time": 33.65,
+      "time": 41.65,
       "type": "felt_arrival",
       "gain": 0.048,
       "pan": 0.48,
@@ -167,7 +167,7 @@
       "note": "Very short, damped woody contact; no notification pitch"
     },
     {
-      "time": 34.01,
+      "time": 42.01,
       "type": "felt_arrival",
       "gain": 0.05,
       "pan": 0.48,
@@ -176,7 +176,7 @@
       "note": "Very short, damped woody contact; no notification pitch"
     },
     {
-      "time": 34.37,
+      "time": 42.37,
       "type": "felt_arrival",
       "gain": 0.052,
       "pan": 0.48,
@@ -185,7 +185,7 @@
       "note": "Very short, damped woody contact; no notification pitch"
     },
     {
-      "time": 34.73,
+      "time": 42.73,
       "type": "felt_arrival",
       "gain": 0.054,
       "pan": 0.48,
@@ -194,7 +194,7 @@
       "note": "Very short, damped woody contact; no notification pitch"
     },
     {
-      "time": 34.85,
+      "time": 42.85,
       "type": "perspective_bloom",
       "gain": 0.047,
       "pan": 0.4,
@@ -203,7 +203,7 @@
       "note": "Continuous warm widening matched to camera enlargement; no bass-drop"
     },
     {
-      "time": 36.34066,
+      "time": 44.34066,
       "type": "felt_arrival",
       "gain": 0.047,
       "pan": 0.46,
@@ -212,7 +212,7 @@
       "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
     },
     {
-      "time": 37.021978,
+      "time": 45.021978,
       "type": "felt_arrival",
       "gain": 0.044,
       "pan": 0.46,
@@ -221,7 +221,7 @@
       "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
     },
     {
-      "time": 37.703297,
+      "time": 45.703297,
       "type": "felt_arrival",
       "gain": 0.04,
       "pan": 0.46,
@@ -230,7 +230,7 @@
       "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
     },
     {
-      "time": 38.384615,
+      "time": 46.384615,
       "type": "paper_tap",
       "gain": 0.052,
       "pan": 0.46,
@@ -239,7 +239,7 @@
       "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
     },
     {
-      "time": 39.065934,
+      "time": 47.065934,
       "type": "photo_paper",
       "gain": 0.058,
       "pan": 0.46,
@@ -248,7 +248,7 @@
       "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
     },
     {
-      "time": 39.747253,
+      "time": 47.747253,
       "type": "felt_arrival",
       "gain": 0.043,
       "pan": 0.46,
@@ -257,7 +257,7 @@
       "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
     },
     {
-      "time": 40.428572,
+      "time": 48.428572,
       "type": "felt_arrival",
       "gain": 0.046,
       "pan": 0.46,
@@ -266,7 +266,7 @@
       "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
     },
     {
-      "time": 41.10989,
+      "time": 49.10989,
       "type": "felt_arrival",
       "gain": 0.043,
       "pan": 0.46,
@@ -275,7 +275,7 @@
       "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
     },
     {
-      "time": 41.791209,
+      "time": 49.791209,
       "type": "paper_tap",
       "gain": 0.055,
       "pan": 0.46,
@@ -284,7 +284,7 @@
       "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
     },
     {
-      "time": 43.1,
+      "time": 51.1,
       "type": "warm_boundary",
       "gain": 0.065,
       "pan": 0,
@@ -292,7 +292,7 @@
       "note": "New dark section; restrained low-mid contact, not a trailer impact"
     },
     {
-      "time": 45.025,
+      "time": 53.025,
       "type": "air_link",
       "gain": 0.04,
       "pan": -0.3,
@@ -300,7 +300,7 @@
       "pan_end": 0.25
     },
     {
-      "time": 50.785,
+      "time": 58.785,
       "type": "felt_arrival",
       "gain": 0.055,
       "pan": -0.34,
@@ -308,7 +308,7 @@
       "variation": 2
     },
     {
-      "time": 51.065,
+      "time": 59.065,
       "type": "felt_arrival",
       "gain": 0.055,
       "pan": 0.34,
@@ -316,7 +316,7 @@
       "variation": 4
     },
     {
-      "time": 52.92,
+      "time": 60.92,
       "type": "paper_glide",
       "gain": 0.06,
       "pan": 0,
@@ -325,7 +325,7 @@
       "note": "Two extraction cards move together into the grid"
     },
     {
-      "time": 54.53,
+      "time": 62.53,
       "type": "soft_settle",
       "gain": 0.045,
       "pan": 0,
@@ -333,7 +333,7 @@
       "note": "Grid completes; no celebratory chime"
     },
     {
-      "time": 60.5,
+      "time": 68.5,
       "type": "paper_glide",
       "gain": 0.045,
       "pan": 0.05,
@@ -341,7 +341,7 @@
       "note": "Local card-label swap only"
     },
     {
-      "time": 68.675,
+      "time": 76.675,
       "type": "air_link",
       "gain": 0.05,
       "pan": -0.38,
@@ -350,7 +350,7 @@
       "note": "Single broad fan-out sound, not six high pings"
     },
     {
-      "time": 70.355,
+      "time": 78.355,
       "type": "paper_tap",
       "gain": 0.045,
       "pan": 0.45,
@@ -358,7 +358,7 @@
       "note": "Self-hosting note settles"
     },
     {
-      "time": 73.58125,
+      "time": 81.58125,
       "type": "felt_low",
       "gain": 0.045,
       "pan": 0.3,
@@ -366,7 +366,7 @@
       "note": "Identity module settled; calm and neutral"
     },
     {
-      "time": 75.265625,
+      "time": 83.265625,
       "type": "soft_settle",
       "gain": 0.038,
       "pan": 0.3,
@@ -374,7 +374,7 @@
       "note": "Session devices complete, no login-success notification"
     },
     {
-      "time": 77.5,
+      "time": 85.5,
       "type": "air_link",
       "gain": 0.035,
       "pan": 0.1,
@@ -383,7 +383,7 @@
       "note": "HTTPS section connection; do not sonify every packet loop"
     },
     {
-      "time": 84.12,
+      "time": 92.12,
       "type": "soft_settle",
       "gain": 0.035,
       "pan": 0,
@@ -391,21 +391,21 @@
       "note": "AI processing boundary; no alarm"
     },
     {
-      "time": 88.594984,
+      "time": 96.594984,
       "type": "felt_low",
       "gain": 0.045,
       "pan": 0,
       "duration": 0.14
     },
     {
-      "time": 89.791222,
+      "time": 97.791222,
       "type": "soft_settle",
       "gain": 0.04,
       "pan": 0,
       "duration": 0.18
     },
     {
-      "time": 91.654545,
+      "time": 99.654545,
       "type": "paper_slide",
       "gain": 0.045,
       "pan": 0,
@@ -413,7 +413,7 @@
       "pan_end": 0.08
     },
     {
-      "time": 95.566667,
+      "time": 103.566667,
       "type": "felt_arrival",
       "gain": 0.039,
       "pan": 0,
@@ -422,7 +422,7 @@
       "note": "Only three of five milestones receive faint contact sounds"
     },
     {
-      "time": 97.033333,
+      "time": 105.033333,
       "type": "felt_arrival",
       "gain": 0.039,
       "pan": 0,
@@ -431,7 +431,7 @@
       "note": "Only three of five milestones receive faint contact sounds"
     },
     {
-      "time": 98.5,
+      "time": 106.5,
       "type": "felt_arrival",
       "gain": 0.039,
       "pan": 0,
@@ -440,7 +440,7 @@
       "note": "Only three of five milestones receive faint contact sounds"
     },
     {
-      "time": 101.25,
+      "time": 109.25,
       "type": "closing_settle",
       "gain": 0.05,
       "pan": 0,

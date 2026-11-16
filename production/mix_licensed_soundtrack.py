@@ -15,7 +15,7 @@ from action_effects import render_foley,filt
 ROOT=Path(__file__).resolve().parent.parent
 WORK=ROOT/'.sound-build'
 SR=44100
-DURATION=106
+DURATION=114
 SOURCE_URL='https://www.scottbuckley.com.au/library/wp-content/uploads/2025/10/Origami.mp3'
 SOURCE=WORK/'Origami-ScottBuckley-original.mp3'
 FFMPEG=imageio_ffmpeg.get_ffmpeg_exe()
@@ -47,7 +47,7 @@ def main():
     # Keep the song's own opening/build and its natural closing phrase. The
     # equal-power outro edit sits across the film's final chapter transition.
     music=source[:DURATION*SR].copy()
-    start=100*SR
+    start=(DURATION-6)*SR
     outro=source[round(178.23*SR):round(184.23*SR)]
     assert len(outro)==6*SR
     overlap=round(1.6*SR)
@@ -66,7 +66,7 @@ def main():
         envelope[a:b]*=1-(1-10**(-2.6/20))*dip
     t=np.arange(len(music))/SR
     envelope*=np.sin(np.clip(t/.32,0,1)*np.pi/2)**2
-    envelope*=np.cos(np.clip((t-105.2)/.7,0,1)*np.pi/2)**2
+    envelope*=np.cos(np.clip((t-(DURATION-.8))/.7,0,1)*np.pi/2)**2
     music*=envelope[:,None]
     temp=WORK/'music-unscaled.wav';wavfile.write(temp,SR,music)
     music_gain=10**((-19.0-float(measure(temp)['input_i']))/20)
@@ -76,7 +76,7 @@ def main():
     # Preserve the level of the previously approved effects bus.
     effects*=3.2352177738982166
     fadein=np.clip((t-.12)/.35,0,1)
-    fadeout=np.cos(np.clip((t-104.8)/1.1,0,1)*np.pi/2)**2
+    fadeout=np.cos(np.clip((t-(DURATION-1.2))/1.1,0,1)*np.pi/2)**2
     effects*=(fadein*fadeout)[:,None]
     mix=music+effects
     assert np.isfinite(mix).all()
@@ -90,7 +90,7 @@ def main():
         '-metadata','artist=Scott Buckley','-metadata','copyright=Music licensed CC BY 4.0; edited and mixed for this film',str(target)],check=True)
     report={'duration':DURATION,'sampleRate':SR,'channels':2,'musicTitle':'Origami','musicArtist':'Scott Buckley',
         'license':'CC BY 4.0','source':SOURCE_URL,'sourceSha256':hashlib.sha256(SOURCE.read_bytes()).hexdigest(),
-        'edits':{'main':[0,101.6],'outro':[178.23,184.23],'crossfade':[100,101.6]},
+        'edits':{'main':[0,DURATION-4.4],'outro':[178.23,184.23],'crossfade':[DURATION-6,DURATION-4.4]},
         'foleyEvents':len(direction['events']),'effectsBusGain':3.2352177738982166,'musicGain':music_gain,
         'peak':float(np.max(np.abs(mix))),'finalMeasure':measure(target)}
     (WORK/'mix-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')

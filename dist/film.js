@@ -107,7 +107,7 @@
   function head(index,label,dark=false){
     const m=portrait?60:70,fg=dark?"#b5c99c":"#6e825e",fs=portrait?17:14;
     text("一个只和自己聊天的 App",m,portrait?48:42,fs,fg);
-    text(String(index+1).padStart(2,"0")+" / "+String(scenes.length).padStart(2,"0"),W-m,portrait?48:42,fs,dark?"#739269":"#9baa8a",400,"right","Consolas,monospace");
+    text(String(scenes.indexOf(activeScene)+1).padStart(2,"0")+" / "+String(scenes.length).padStart(2,"0"),W-m,portrait?48:42,fs,dark?"#739269":"#9baa8a",400,"right","Consolas,monospace");
     line(m,portrait?90:78,W-m,portrait?90:78,dark?"#4a6341":"#d3dcc8");
     if(label)text(label,m,portrait?119:108,portrait?17:14,fg);
   }
@@ -305,20 +305,19 @@
   function sceneOrigin(t){
     background(false,t);head(1,"我和文件传输助手的故事");
     // These anchors never restart when a story beat changes.
-    lines(["文件传输助手，","早已不止是","文件传输助手。"],110,185,64,C.ink,600,1.32);
+    lines(["不知道你有没有","这样的习惯。"],110,205,64,C.ink,600,1.4);
     storyPanel("",t);
     const cuts=[0,8.5,17.5];
     const scripts=[
-      ["我现在经常使用微信的文件传输助手，","或者直接给自己的 QQ 账号发消息。"],
-      ["突然想到的灵感、学习工作中的记录，","生活中需要记住的事情，都会发进去。"],
+      ["我经常用微信的文件传输助手，","或者给自己的 QQ 账号发消息，","在不同设备之间传递文字和文件。"],
+      ["突然想到的灵感、学习工作中的记录，","生活中需要记住的事情，都会发进去，","当成备忘录、日程提醒或者 To-do List。"],
       ["偶尔会在里面写文案、看面试和汇报稿，","甚至顺手记下不认识的单词。"]
     ];
     const titles=["文件传输助手 / 给自己发消息","随手留下的记录","文案和讲稿，直接发成消息"];
-    clipSwap(t,cuts,{x:108,y:487,w:670,h:135},i=>lines(scripts[i],114,499,26,C.muted,400,1.95));
+    clipSwap(t,cuts,{x:108,y:487,w:700,h:145},i=>lines(scripts[i],114,499,26,C.muted,400,1.8));
     clipSwap(t,cuts,{x:109,y:677,w:650,h:39},i=>text(["文字与文件","备忘与记录","稿件与单词"][i],114,685,21,"#8ba171"));
     clipSwap(t,cuts,{x:919,y:228,w:475,h:49},i=>text(titles[i],922,233,25,C.green,500));
     clipSwap(t,cuts,{x:856,y:307,w:618,h:404},storyContents,"x",.55,1.9);
-    clipSwap(t,cuts,{x:100,y:798,w:1400,h:60},i=>subtitle([["除了传文件，也逐渐当成了备忘录。","有时候直接当成备忘录、日程提醒或者 To-do List 来用。","这些随手记下的内容，之后还会再打开看。"][i]]));
   }
 
   function deviceScreenContent(x, y, w, h, accent = false) {
@@ -457,6 +456,43 @@
       text(name, cx, y + availableH + 11, 22, "#657f53", 400, "center");
     }
     return { cx, top: y, width: actualW, height: actualH };
+  }
+
+  function sceneFriction(t){
+    background(false,t);head(3,"为什么想自己做一个 / 现有方案的不便");
+    const second=t>=4,q=second?t-4:t;
+    if(!second){
+      lines(["在三种系统之间传文件，","却要来回切换登录。"],110,188,53,C.ink,600,1.4);
+      paragraph("我经常需要在 Mac、Windows 和 Linux 之间传文件，常用的聊天软件又不方便多台电脑同时登录。",114,410,630,26,C.muted,1.85);
+      const names=["macOS","Windows","Linux"],centres=[918,1136,1354];
+      const current=Math.min(2,Math.floor(Math.max(0,t-.45)/.95));
+      centres.forEach((cx,i)=>{
+        drawDevice(cx-92,306,184,171,names[i],i===0?"laptop":"desktop",i===current);
+        rr(cx-76,513,152,43,10,i===current?C.green:"#e6ecdd");
+        text(i===current?"当前登录":"需要切换",cx,524,18,i===current?"#edf5df":"#8a9d79",400,"center");
+      });
+      line(842,601,1430,601,"#cbd8bd",1.5);
+      const p=clamp((t-.45)/1.9),cx=lerp(918,1354,p);
+      circle(cx,601,5,"#668e4e");
+      text("常用聊天软件的登录限制",1136,648,23,C.green,500,"center");
+    }else{
+      lines(["想到什么就想发条消息，","不想先建文档、再分类。"],110,188,53,C.ink,600,1.4);
+      paragraph("我本来就比较懒。想到什么直接发条消息，总比打开笔记软件、新建文档、考虑怎么分类方便得多。",114,410,630,26,C.muted,1.85);
+      const steps=[{label:"打开笔记软件",type:"book"},{label:"新建文档",type:"file"},{label:"考虑怎么分类",type:"folder"}];
+      steps.forEach((step,i)=>{
+        const x=835+i*220;
+        reveal(q,.18+i*.38,()=>{
+          rr(x,315,190,180,17,C.white,"#cad8bc");icon(step.type,x+74,350,42,"#76985b");
+          text(step.label,x+95,433,21,C.green,500,"center");
+        },12,.28);
+        if(i<2)reveal(q,.45+i*.38,()=>icon("arrow",x+194,387,24,"#a0b78a"),0,.22);
+      });
+      reveal(q,1.15,()=>{
+        rr(915,563,422,76,15,C.pale);icon("chat",936,583,31);
+        text("今天终于把实验跑通了",988,586,24,C.ink);
+        text("只是想随手记下这一句。",1136,684,23,C.green,400,"center");
+      },12,.3);
+    }
   }
 
   function sceneNeed(t) {
@@ -887,7 +923,6 @@
         });
       }
     },"x",.55,1.2);
-    clipSwap(t,cuts,{x:100,y:798,w:1400,h:60},i=>subtitle([["喜欢的作品先留下来，方便以后再看。","想看的东西，免得之后忘了。","想到什么直接发条消息，总比打开笔记软件、新建文档、考虑怎么分类方便得多。"][i]]));
   }
 
   function capabilityGrid(items,t,y=330,dark=false,stable=false,previous=null){
@@ -1054,18 +1089,19 @@
     {start:0,end:3,label:"开篇",description:"这是对一个项目设想的描述，不是项目名称。",sourceTimes:[[0.0,0],[2.175,2.9],[3,9]],draw:sceneTitle},
     {start:3,end:14,label:"我和文件传输助手",description:"我经常给自己发消息。除了文件，还会直接发送备忘、记录、文案、讲稿和单词。",sourceTimes:[[0.0,0],[3.006667,4.1],[3.373333,8.1],[3.666667,8.5],[6.673333,12.6],[7.04,17.1],[7.333333,17.5],[10.34,21.6],[11,27]],draw:sceneOrigin},
     {start:14,end:23,label:"零碎的生活记录",description:"我会留下喜欢的摄影作品、想看的书和电影、想补的番；零碎消息也成了生活记录。",sourceTimes:[[0.0,0],[2.3625,4.35],[3.0,7],[5.3625,11.35],[6.0,14],[8.3625,18.35],[9,21]],draw:sceneMemory},
-    {start:23,end:29,label:"想自己做一个",description:"macOS、Windows 和 Linux 分别连接云端，找回完整历史记录。",sourceTimes:[[0.0,0],[3.75,5],[4.65,11.5],[6,18]],draw:sceneNeed},
-    {start:29,end:36,label:"核心理念",description:"九种用途沿各自路径成为消息，共同进入唯一聊天入口，保留在同一条时间线。",sourceTimes:[[0,0],[5.85,11.15],[6.45,13.75],[7,18]],draw:scenePurposes},
-    {start:36,end:43,label:"给自己发消息",description:"原案中的八条文字和文件消息，以及建筑摄影。",sourceTimes:[[0.0,0],[6.2,18.2],[7,28]],draw:sceneChat},
-    {start:43,end:49,label:"保存与整理",description:"云端保存原始记录，AI 整理结果可以修改，不影响原始消息。",sourceTimes:[[0.0,0],[4.65,6.2],[6,19]],draw:sceneProcess},
-    {start:49,end:56,label:"整理后的信息",description:"电影与待办提取，再形成六种信息视图。",sourceTimes:[[0.0,0],[2.94,4.2],[3.92,10.6],[4.2,11],[5.88,13.4],[7,23]],draw:sceneOrganize},
-    {start:56,end:65,label:"常用操作",description:"消息与文件传输、编辑、预览、搜索，以及离线缓存、备份恢复和完整导出。",sourceTimes:[[0.0,0],[3.375,6],[4.2,9.6],[4.5,10],[7.875,16],[9,20]],draw:sceneFeatures},
-    {start:65,end:72,label:"六平台与自托管",description:"六个平台各自使用客户端或浏览器，连接同一服务端；初期计划支持自托管。",sourceTimes:[[0.0,0],[4.34,6.2],[5.04,8],[5.67,8.9],[7,18]],draw:sceneDevices},
-    {start:72,end:83,label:"身份验证与网络安全",description:"安全身份认证、设备与会话管理、HTTPS 传输加密、数据访问控制、基本限流与防护。",sourceTimes:[[0.0,0],[1.7875,2.6],[2.75,7],[5.5,15],[11,30]],draw:sceneBasicSecurity},
-    {start:83,end:87,label:"AI 与隐私",description:"用户应知道哪些数据会送往外部模型服务，并控制 AI 处理范围。",sourceTimes:[[0.0,0],[2.16,2.7],[4,8]],draw:scenePrivacy},
-    {start:87,end:95,label:"初步技术设想",description:"候选技术方案尚未确定，先可靠保存，再由独立任务进行 AI 处理。",sourceTimes:[[0.0,0],[3.854545,5.8],[4.363636,11.6],[4.654545,12],[6.909091,15.1],[8,24]],draw:sceneArchitecture},
-    {start:95,end:101,label:"开发规划",description:"五个开发阶段，基础安全从第一阶段开始。",sourceTimes:[[0.0,0],[4.8,7.2],[6,20]],draw:sceneRoadmap},
-    {start:101,end:106,label:"最后想做成的样子",description:"一个真正能长期用下去的文件传输助手。相关功能尚待开发。",sourceTimes:[[0.0,0],[3.583333,4.3],[5,13]],draw:sceneEnd}
+    {start:23,end:31,label:"现有方案的不便",description:"常用聊天软件不方便多台电脑同时登录；笔记软件需要打开、新建文档和考虑分类。",sourceTimes:[[0,0],[8,8]],draw:sceneFriction},
+    {start:31,end:37,label:"想自己做一个",description:"macOS、Windows 和 Linux 分别连接云端，找回完整历史记录。",sourceTimes:[[0.0,0],[3.75,5],[4.65,11.5],[6,18]],draw:sceneNeed},
+    {start:37,end:44,label:"核心理念",description:"九种用途沿各自路径成为消息，共同进入唯一聊天入口，保留在同一条时间线。",sourceTimes:[[0,0],[5.85,11.15],[6.45,13.75],[7,18]],draw:scenePurposes},
+    {start:44,end:51,label:"给自己发消息",description:"原案中的八条文字和文件消息，以及建筑摄影。",sourceTimes:[[0.0,0],[6.2,18.2],[7,28]],draw:sceneChat},
+    {start:51,end:57,label:"保存与整理",description:"云端保存原始记录，AI 整理结果可以修改，不影响原始消息。",sourceTimes:[[0.0,0],[4.65,6.2],[6,19]],draw:sceneProcess},
+    {start:57,end:64,label:"整理后的信息",description:"电影与待办提取，再形成六种信息视图。",sourceTimes:[[0.0,0],[2.94,4.2],[3.92,10.6],[4.2,11],[5.88,13.4],[7,23]],draw:sceneOrganize},
+    {start:64,end:73,label:"常用操作",description:"消息与文件传输、编辑、预览、搜索，以及离线缓存、备份恢复和完整导出。",sourceTimes:[[0.0,0],[3.375,6],[4.2,9.6],[4.5,10],[7.875,16],[9,20]],draw:sceneFeatures},
+    {start:73,end:80,label:"六平台与自托管",description:"六个平台各自使用客户端或浏览器，连接同一服务端；初期计划支持自托管。",sourceTimes:[[0.0,0],[4.34,6.2],[5.04,8],[5.67,8.9],[7,18]],draw:sceneDevices},
+    {start:80,end:91,label:"身份验证与网络安全",description:"安全身份认证、设备与会话管理、HTTPS 传输加密、数据访问控制、基本限流与防护。",sourceTimes:[[0.0,0],[1.7875,2.6],[2.75,7],[5.5,15],[11,30]],draw:sceneBasicSecurity},
+    {start:91,end:95,label:"AI 与隐私",description:"用户应知道哪些数据会送往外部模型服务，并控制 AI 处理范围。",sourceTimes:[[0.0,0],[2.16,2.7],[4,8]],draw:scenePrivacy},
+    {start:95,end:103,label:"初步技术设想",description:"候选技术方案尚未确定，先可靠保存，再由独立任务进行 AI 处理。",sourceTimes:[[0.0,0],[3.854545,5.8],[4.363636,11.6],[4.654545,12],[6.909091,15.1],[8,24]],draw:sceneArchitecture},
+    {start:103,end:109,label:"开发规划",description:"五个开发阶段，基础安全从第一阶段开始。",sourceTimes:[[0.0,0],[4.8,7.2],[6,20]],draw:sceneRoadmap},
+    {start:109,end:114,label:"最后想做成的样子",description:"一个真正能长期用下去的文件传输助手。相关功能尚待开发。",sourceTimes:[[0.0,0],[3.583333,4.3],[5,13]],draw:sceneEnd}
   ];
   function sourceTime(scene,local){
     const points=scene.sourceTimes;
@@ -1086,7 +1122,7 @@
     return {width:W,height:H,portrait};
   }
   function render(time){
-    lastTime=clamp(time,0,106);resize();
+    lastTime=clamp(time,0,114);resize();
     const index=scenes.findIndex(s=>lastTime>=s.start&&lastTime<s.end),i=index<0?scenes.length-1:index,scene=scenes[i];
     activeScene=scene;motionLocalTime=lastTime-scene.start;
     ctx.save();ctx.globalAlpha=1;scene.draw(sourceTime(scene,lastTime-scene.start));ctx.restore();
@@ -1094,7 +1130,7 @@
     canvas.dataset.scene=String(i);canvas.dataset.time=lastTime.toFixed(2);
     return scene;
   }
-  window.InboxConceptFilm={duration:106,posterTime:2.1,render,resize,scenes:scenes.map(({draw,...rest})=>rest)};
+  window.InboxConceptFilm={duration:114,posterTime:2.1,render,resize,scenes:scenes.map(({draw,...rest})=>rest)};
   photo.addEventListener("load",()=>render(lastTime));
   if("ResizeObserver" in window)new ResizeObserver(()=>render(lastTime)).observe(screen);
   window.addEventListener("resize",()=>render(lastTime),{passive:true});
