@@ -1,9 +1,6 @@
 {
   "duration": 109,
   "voiceover": false,
-  "tempo_bpm": 88,
-  "style": "Warm, clean, tactile concept film; neither trailer nor game UI. Original instrumental score and restrained Foley.",
-  "gain_convention": "Foley gain is a linear relative level applied after individual source normalization; keep score above texture but below close contacts. Adjust final mix by LUFS/true peak, not by these numbers alone.",
   "mix": {
     "target_integrated_lufs": -18,
     "true_peak_dbfs": -1.5,
@@ -21,78 +18,6 @@
     "stereo": "Music remains center-stable with moderate width. Use actual visual left/right for Foley; never hard-pan important impact.",
     "main_rule": "Do not trigger an automatic sound on every scene boundary. Score bridges most cuts."
   },
-  "sections": [
-    {
-      "start": 0,
-      "end": 3,
-      "name": "opening",
-      "energy": 0.3,
-      "description": "Sparse upper felt/piano motif, no pulse; leave first .2 seconds open"
-    },
-    {
-      "start": 3,
-      "end": 14,
-      "name": "personal_habit",
-      "energy": 0.42,
-      "description": "Warm organic plucks and two-note piano answer, felt/wood timbre; breath between story beats"
-    },
-    {
-      "start": 14,
-      "end": 29,
-      "name": "memory_to_cloud",
-      "energy": 0.48,
-      "description": "Continue same harmonic world, lift upper register lightly; gentle sustained layer begins under cloud"
-    },
-    {
-      "start": 29,
-      "end": 39,
-      "name": "convergence",
-      "energy": 0.72,
-      "description": "Introduce soft 88 BPM pulse and evolving arpeggio; widen stereo with the nine-to-one movement; resolve during zoom"
-    },
-    {
-      "start": 39,
-      "end": 46,
-      "name": "examples",
-      "energy": 0.6,
-      "description": "Thin the melody so close tactile message Foley is audible; maintain forward pulse, no competing high bells"
-    },
-    {
-      "start": 46,
-      "end": 59,
-      "name": "save_then_organize",
-      "energy": 0.55,
-      "description": "Round low pluck, one warm chord movement, half-time feel; explanation remains clear"
-    },
-    {
-      "start": 59,
-      "end": 75,
-      "name": "capabilities_and_devices",
-      "energy": 0.58,
-      "description": "Motif returns in lighter marimba/felt colour, subtle rhythmic ticks on alternate beats; no four-on-the-floor kick"
-    },
-    {
-      "start": 75,
-      "end": 90,
-      "name": "security_and_privacy",
-      "energy": 0.29,
-      "description": "Remove high ostinato and drums; warm steady low-mid harmony, occasional dry texture; grounded, no suspense or threat"
-    },
-    {
-      "start": 90,
-      "end": 104,
-      "name": "architecture_and_plan",
-      "energy": 0.5,
-      "description": "Bring back short motif and light pulse; clear progression, still conversational scale"
-    },
-    {
-      "start": 104,
-      "end": 109,
-      "name": "ending",
-      "energy": 0.28,
-      "description": "Resolve the opening motif with felt/piano and warm tail; stop new notes after 106.2, fade all audio smoothly by 108.9"
-    }
-  ],
   "score_breaths": [
     {
       "start": 13.6,
@@ -572,13 +497,5 @@
       "note": "Soft return, not a brand lock-up or triumph"
     }
   ],
-  "avoid": [
-    "narration / TTS / vocal texture",
-    "one paper whoosh per scene",
-    "one sine beep per message",
-    "constant sub drone",
-    "alarm-style security sounds",
-    "literal shutter or zipper without matching action",
-    "abrupt endings when paused/seeking"
-  ]
+  "revision": "Preserved action sounds; music is authored separately in music-score.json."
 }

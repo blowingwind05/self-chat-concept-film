@@ -125,6 +125,18 @@
     const seg=points.slice(1).map((p,i)=>Math.hypot(p[0]-points[i][0],p[1]-points[i][1]));let dist=(t%1)*seg.reduce((a,b)=>a+b,0);
     for(let i=0;i<seg.length;i++){if(dist<=seg[i]){const p=dist/seg[i];circle(lerp(points[i][0],points[i+1][0],p),lerp(points[i][1],points[i+1][1],p),3.5,color);break}dist-=seg[i]}
   }
+  function pathPoint(points,progress){
+    const segments=points.slice(1).map((p,i)=>Math.hypot(p[0]-points[i][0],p[1]-points[i][1]));
+    let remaining=clamp(progress)*segments.reduce((sum,length)=>sum+length,0);
+    for(let i=0;i<segments.length;i++){
+      if(remaining<=segments[i]){
+        const p=segments[i]?remaining/segments[i]:1;
+        return {x:lerp(points[i][0],points[i+1][0],p),y:lerp(points[i][1],points[i+1][1],p)};
+      }
+      remaining-=segments[i];
+    }
+    const last=points[points.length-1];return {x:last[0],y:last[1]};
+  }
   // Content timing may skip ahead to shorten a hold. Moving transfers use the
   // real playhead instead, so that edit never changes their velocity mid-path.
   function editedTimeAt(source){
@@ -346,13 +358,20 @@
     text(detail, x + 109, y + 70, 19, "#7a9067");
   }
 
-  function deviceIndependentLink(points, t, delay, speed = .34) {
+  function deviceIndependentLink(points, t, delay, finishAt = 5.25) {
     // Each path has one cloud port and one client. There is no client-to-client
     // segment and no shared horizontal bus that can look like device chaining.
     const p = enter(t, delay, 1.15);
     dotLine(points, p, "#9eb98a", 1.7);
-    if (t > delay + 1.3) {
-      packet(points.slice().reverse(), transferPhase(delay+1.3,speed), "#739c55");
+    const start=editedTimeAt(delay+1.3);
+    if (motionLocalTime >= start) {
+      const progress=clamp((motionLocalTime-start)/(finishAt-start));
+      const point=pathPoint(points.slice().reverse(),progress);
+      circle(point.x,point.y,3.5,"#739c55");
+      if(progress===1){
+        const settled=clamp((motionLocalTime-finishAt)/.32);
+        group(1-settled,0,0,()=>circle(point.x,point.y,4+settled*8,null,"#8caa70",1.2));
+      }
     }
   }
 
@@ -783,7 +802,7 @@
         [ports[i], 450],
         [client.cx, 552],
         [client.cx, 580]
-      ], t, 4.25 + i * .15, .32);
+      ], t, 4.25 + i * .15, 6.0);
     });
 
     reveal(t, 1.05, () => {
@@ -797,11 +816,11 @@
     }, 23));
 
     reveal(t, 8.0, () => {
-      rr(1130, 320, 360, 128, 17, C.green);
-      icon("server", 1155, 342, 33, "#c8dfa1");
-      text("初期自托管", 1210, 341, 25, "#e5efd7", 500);
-      text("计划", 1466, 338, 12, "#a9c48d", 400, "right");
-      text("公网服务器 · VPS · NAS", 1157, 397, 19, "#c1d5ab");
+      rr(1130, 340, 360, 110, 17, C.green);
+      icon("server", 1155, 361, 33, "#c8dfa1");
+      text("初期自托管", 1210, 363, 25, "#e5efd7", 500);
+      text("计划", 1466, 357, 12, "#a9c48d", 400, "right");
+      text("公网服务器 · VPS · NAS", 1157, 410, 19, "#c1d5ab");
     }, 22);
 
     reveal(t, 5.9, () => subtitle([
@@ -904,24 +923,77 @@
     },"cut",.5);
   }
 
+  // One account shares a centred trunk with three distinct client sessions.
+  function secureSessionDevice(cx,type,label){
+    const frame="#a5c488",body="#294b33",detail="#71965b",ink="#c8dfac";
+    if(type==="desktop"){
+      // 16:10 display, with a short neck and foot outside the screen.
+      rr(cx-80,500,160,100,9,body,frame,1.8);
+      rr(cx-69,512,138,76,4,"#33583c");
+      rr(cx-56,526,58,4,2,detail);
+      rr(cx-56,540,100,4,2,"#587d47");
+      rr(cx-56,554,79,4,2,"#587d47");
+      line(cx,600,cx,611,frame,2);
+      line(cx-31,614,cx+31,614,frame,2);
+    }else if(type==="phone"){
+      // One narrow phone silhouette; it is not another wide empty screen card.
+      rr(cx-28,504,56,112,10,body,frame,1.8);
+      line(cx-7,513,cx+7,513,frame,1.5);
+      rr(cx-21,524,42,77,4,"#33583c");
+      rr(cx-14,535,28,4,2,detail);
+      rr(cx-14,548,22,4,2,"#587d47");
+      rr(cx-14,561,26,4,2,"#587d47");
+      line(cx-7,608,cx+7,608,frame,1.5);
+    }else{
+      // Browser window with a clear chrome strip and a small content hierarchy.
+      rr(cx-80,514,160,100,9,body,frame,1.8);
+      line(cx-79,535,cx+79,535,"#6a8c53",1);
+      for(let i=0;i<3;i++)circle(cx-66+i*9,524.5,2,"#9cbb7d");
+      rr(cx-29,521,93,6,3,"#426843");
+      rr(cx-66,548,30,51,4,"#3b6241");
+      rr(cx-24,549,86,5,2,detail);
+      rr(cx-24,564,71,4,2,"#587d47");
+      rr(cx-24,578,81,4,2,"#587d47");
+    }
+    text(label,cx,641,23,ink,500,"center");
+  }
+
+  function secureSessionDiagram(q){
+    const cx=1168,busY=445;
+    const nodes=[
+      {cx:910,top:500,type:"desktop",label:"电脑"},
+      {cx:1168,top:504,type:"phone",label:"手机"},
+      {cx:1426,top:514,type:"browser",label:"Web"}
+    ];
+    const trunk=clamp(q/.4),bus=clamp((q-.3)/.45);
+    const ink="#779c5f",stroke=1.7;
+    // The common trunk is drawn once, and each arm occupies a different segment.
+    // All three columns are centred on x = 1168; there is no staggered overdraw.
+    dotLine([[cx,389],[cx,busY]],trunk,ink,stroke);
+    if(bus>0){
+      line(cx,busY,lerp(cx,nodes[0].cx,bus),busY,ink,stroke);
+      line(cx,busY,lerp(cx,nodes[2].cx,bus),busY,ink,stroke);
+    }
+    nodes.forEach((node,i)=>{
+      const leg=clamp((q-.7)/.4);
+      dotLine([[node.cx,busY],[node.cx,node.top]],leg,ink,stroke);
+      const appear=enter(q,.65+i*.15,.55);
+      group(appear,0,(1-appear)*12,()=>secureSessionDevice(node.cx,node.type,node.label));
+    });
+    group(enter(q,.25,.35),0,0,()=>text("会话",cx+20,405,18,"#91b379"));
+  }
+
   function sceneBasicSecurity(t){
     background(true,t);head(10,"身份验证与网络安全 / 初期基本保障",true);
     if(t<15){
       reveal(t,.1,()=>lines(["身份验证","与设备会话管理"],110,182,61,"#e5efd8",600,1.36));
       secureFocusList(["安全身份认证","设备与会话管理"],t<7?0:1,413);
       reveal(t,1.2,()=>lines(["后续研究","多因素身份验证 · 多设备信任机制"],114,661,20,"#91b379",400,1.9));
-      reveal(t,.5,()=>secureIdentity(1000,259,370,145));
+      reveal(t,.5,()=>secureIdentity(999,259,338,130));
       if(t>=7){
-        const q=t-7;
-        const nodes=[{x:815,label:"设备 01"},{x:1073,label:"设备 02"},{x:1331,label:"设备 03"}];
-        nodes.forEach((node,i)=>{
-          const pth=[[1185,404],[1185,470],[node.x+83,470],[node.x+83,528]];
-          dotLine(pth,enter(q,.3+i*.2,1),"#739e5b",1.7);
-          reveal(q,.9+i*.25,()=>{rr(node.x,528,166,131,14,"#294b33","#668a52");rr(node.x+22,548,122,65,7,null,"#9cbc7d",1.5);text(node.label,node.x+83,630,17,"#b8d29c",400,"center")});
-        });
-        reveal(q,.4,()=>text("会话",1212,433,19,"#91b379"));
+        secureSessionDiagram(t-7);
       }else{
-        reveal(t,1.7,()=>{rr(1030,469,310,134,15,"#264931","#527b45");icon("shield",1060,510,39,"#91b873");text("安全身份认证",1121,518,25,"#c6dda9",500)});
+        reveal(t,1.7,()=>{rr(1013,469,310,134,15,"#264931","#527b45");icon("shield",1043,510,39,"#91b873");text("安全身份认证",1104,518,25,"#c6dda9",500)});
       }
       subtitle(["长期保存个人信息，账号安全从最初的设计开始考虑。"],true);
     }else{

@@ -4,7 +4,7 @@ No speech, external recordings or stock-music loops. The browser receives a
 single finished stereo master, rather than synthesizing prompts during frames.
 """
 from pathlib import Path
-import json, math, sys, subprocess, re
+import json, math, sys, subprocess, re, argparse, hashlib
 ROOT=Path(__file__).resolve().parent.parent
 SOURCE=Path(__file__).resolve().parent
 WORK=ROOT/'.sound-build'
@@ -51,9 +51,22 @@ def add(bus,x,start,gain=1,pan=0,pan_end=None):
 def instrument(midi,duration,kind,seed):
     rng=np.random.default_rng(seed)
     f=440*2**((midi-69)/12)
-    tail={'felt':.8,'pluck':.4,'bass':.35,'pad':1.5,'brush':0}.get(kind,.5)
+    tail={'felt':.8,'pluck':.4,'bass':.35,'pad':1.5,'brush':0,'kick':.035,'rim':.02,'shaker':.015}.get(kind,.5)
     length=max(.055,duration+tail)
     t=np.arange(round(length*SR),dtype=np.float64)/SR
+    if kind=='kick':
+        phase=2*np.pi*(54*t+76*.026*(1-np.exp(-t/.026)))
+        x=np.sin(phase)*np.exp(-t/.068)*(1-np.exp(-t/.0018))
+        x+=filt(rng.normal(size=len(t)),300,1500)*np.exp(-t/.006)*.035
+        return edges(x.astype(np.float32),.001,.03)*.31
+    if kind=='rim':
+        x=(np.sin(2*np.pi*1180*t)+.58*np.sin(2*np.pi*1780*t)+.32*np.sin(2*np.pi*3200*t))*np.exp(-t/.011)
+        x+=filt(rng.normal(size=len(t)),1300,7000)*np.exp(-t/.009)*.3
+        return edges(x.astype(np.float32),.001,.016)*.105
+    if kind=='shaker':
+        x=filt(rng.normal(size=len(t)),3900,10500)
+        x*=np.sin(np.pi*np.linspace(0,1,len(t)))**.8
+        return norm(edges(x,.003,.012))*.10
     if kind=='brush':
         x=filt(rng.normal(size=len(t)),900,3900)
         return norm(edges(x*np.exp(-t/.026),.003,.025))*.065
@@ -150,14 +163,19 @@ def foley_event(event,index):
     return x
 
 def main():
-    score=json.loads((SOURCE/'music-score.json').read_text(encoding='utf-8-sig'))
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--score',type=Path,default=SOURCE/'music-score.json')
+    parser.add_argument('--reuse-foley',type=Path)
+    parser.add_argument('--reference-music',type=Path)
+    args=parser.parse_args()
+    score=json.loads(args.score.read_text(encoding='utf-8-sig'))
     direction=json.loads((SOURCE/'foley-cues.json').read_text(encoding='utf-8-sig'))
     notes=score['notes']
-    sends={'felt':.38,'pluck':.28,'bass':.075,'pad':.48,'brush':.07}
+    sends={'felt':.38,'pluck':.28,'bass':.075,'pad':.48,'brush':.07,'kick':.025,'rim':.12,'shaker':.03}
     for index,note in enumerate(notes):
         kind=note['instrument'];x=instrument(note['midi'],note['duration'],kind,1500+index)
         gain=note['velocity'];pan=note.get('pan',0)
-        pan=float(np.clip(pan*{'felt':3,'pluck':2,'pad':1.6,'bass':0,'brush':1}[kind],-.55,.55))
+        pan=float(np.clip(pan*{'felt':3,'pluck':2,'pad':1.6,'bass':0,'brush':1,'kick':0,'rim':1,'shaker':1.2}[kind],-.55,.55))
         add(MUSIC,x,note['time'],gain,pan)
         add(SEND,x,note['time'],gain*sends[kind],pan)
     # Soft breaths are not hard cuts: music carries the edits across scene boundaries.
@@ -176,15 +194,31 @@ def main():
                          np.cos(np.maximum((q-.15)/.85,0)*np.pi/2)**2)
             envelope[a:b]*=1-(1-10**(-depth/20))*dip
     MUSIC[:]= (MUSIC+room(SEND))*envelope[:,None]
-    for index,event in enumerate(direction['events']):
-        x=foley_event(event,index)
-        gain=event['gain']
-        gain*= {'fusion_stream':1.6,'perspective_bloom':1.4,'air_link':1.25}.get(event['type'],1)
-        if 39<=event['time']<46:
-            gain*=1.65 if event['time']<41 else (.9 if event['type']=='photo_paper' else 1.35)
-        add(FOLEY,x,event['time'],gain,event.get('pan',0),event.get('pan_end'))
-        add(FOSEND,x,event['time'],gain*.12,event.get('pan',0),event.get('pan_end'))
-    FOLEY[:]+=room(FOSEND,.22,.65)
+    ffmpeg=imageio_ffmpeg.get_ffmpeg_exe()
+    music_calibration=float(score.get('render_gain',1.0))
+    if args.reference_music:
+        probe=WORK/'music-calibration.wav';wavfile.write(probe,SR,MUSIC)
+        def loudness(path):
+            result=subprocess.run([ffmpeg,'-hide_banner','-nostats','-i',str(path),'-af',
+                'loudnorm=I=-18:TP=-1.5:LRA=8:print_format=json','-f','null','-'],
+                capture_output=True,text=True,encoding='utf-8',errors='replace',check=True)
+            return float(json.loads(re.findall(r'\{[\s\S]*?\}',result.stderr)[-1])['input_i'])
+        music_calibration=10**((loudness(args.reference_music)-loudness(probe))/20)
+    MUSIC[:]*=music_calibration
+    if args.reuse_foley:
+        rate,retained=wavfile.read(args.reuse_foley)
+        assert rate==SR and retained.shape==(N,2)
+        FOLEY[:]=retained
+    else:
+        for index,event in enumerate(direction['events']):
+            x=foley_event(event,index)
+            gain=event['gain']
+            gain*= {'fusion_stream':1.6,'perspective_bloom':1.4,'air_link':1.25}.get(event['type'],1)
+            if 39<=event['time']<46:
+                gain*=1.65 if event['time']<41 else (.9 if event['type']=='photo_paper' else 1.35)
+            add(FOLEY,x,event['time'],gain,event.get('pan',0),event.get('pan_end'))
+            add(FOSEND,x,event['time'],gain*.12,event.get('pan',0),event.get('pan_end'))
+        FOLEY[:]+=room(FOSEND,.22,.65)
     # High-pass for clean low end; fade the complete production to digital silence.
     mix=MUSIC+FOLEY
     for c in range(2):mix[:,c]=filt(mix[:,c],30,12500)
@@ -198,7 +232,6 @@ def main():
     wavfile.write(raw,SR,mix.astype(np.float32))
     wavfile.write(WORK/'music-stem.wav',SR,MUSIC)
     wavfile.write(WORK/'foley-stem.wav',SR,FOLEY)
-    ffmpeg=imageio_ffmpeg.get_ffmpeg_exe()
     # Two-pass BS.1770 loudness mastering, with true-peak headroom.
     command=[ffmpeg,'-hide_banner','-nostats','-i',str(raw),'-af',
              'loudnorm=I=-18:TP=-1.5:LRA=8:print_format=json','-f','null','-']
@@ -223,6 +256,8 @@ def main():
         '-t','17','-c:a','libmp3lame','-b:a','256k',str(preview)],check=True)
     report={'duration':DURATION,'sampleRate':SR,'channels':2,'voiceover':False,
         'noteCount':len(notes),'foleyEvents':len(direction['events']),
+        'tempo':score.get('tempo_bpm',score.get('tempo')),'musicCalibration':music_calibration,
+        'foleyReused':bool(args.reuse_foley),'foleySamplesHash':hashlib.sha256(FOLEY.tobytes()).hexdigest(),
         'premaster':measure,'mastering':mastering,'audioBytes':target.stat().st_size,
         'endSilencePeak':float(np.max(np.abs(mix[round(108.91*SR):]))),
         'stereoCorrelation':float(np.corrcoef(mix[:,0],mix[:,1])[0,1])}
