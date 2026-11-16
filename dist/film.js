@@ -460,8 +460,8 @@
 
   function sceneFriction(t){
     background(false,t);head(3,"为什么想自己做一个 / 现有方案的不便");
-    const second=t>=4,q=second?t-4:t;
-    if(!second){
+    const q=t-7;
+    if(t<4){
       lines(["在三种系统之间传文件，","却要来回切换登录。"],110,188,53,C.ink,600,1.4);
       paragraph("我经常需要在 Mac、Windows 和 Linux 之间传文件，常用的聊天软件又不方便多台电脑同时登录。",114,410,630,26,C.muted,1.85);
       const names=["macOS","Windows","Linux"],centres=[918,1136,1354];
@@ -475,23 +475,49 @@
       const p=clamp((t-.45)/1.9),cx=lerp(918,1354,p);
       circle(cx,601,5,"#668e4e");
       text("常用聊天软件的登录限制",1136,648,23,C.green,500,"center");
+    }else if(t<7){
+      lines(["云端记录，","也可能有保存期限。"],110,188,56,C.ink,600,1.4);
+      lines(["飞书免费版可查看最近 18 个月的聊天记录。","对我来说，这些记录是想一直留下来的。"],114,410,26,C.muted,400,1.85);
+      text("飞书 · 免费版",1168,222,23,C.green,500,"center");
+      text("18",1145,278,161,C.ink,500,"center","Georgia,serif");
+      text("个月",1310,389,28,C.green);
+      const p=clamp((t-4.1)/.65);
+      line(867,536,1461,536,"#ccd6bf",3);
+      line(1043,536,lerp(1043,1461,p),536,"#789b5b",6);
+      line(1043,512,1043,560,"#a3b98c",1.5);circle(1461,536,5,"#789b5b");
+      text("更早的记录",948,584,20,"#97a28b",400,"center");
+      text("最近 18 个月",1252,584,24,C.green,500,"center");
+      text("超出期限，无法查看",948,633,16,"#9aa58d",400,"center");
+      text("可以搜索和查看",1252,633,18,"#82996c",400,"center");
+      text("来源：飞书官方权益说明 · 2026-11-16 核对",114,711,14,"#8b9b7b");
     }else{
       lines(["想到什么就想发条消息，","不想先建文档、再分类。"],110,188,53,C.ink,600,1.4);
       paragraph("我本来就比较懒。想到什么直接发条消息，总比打开笔记软件、新建文档、考虑怎么分类方便得多。",114,410,630,26,C.muted,1.85);
-      const steps=[{label:"打开笔记软件",type:"book"},{label:"新建文档",type:"file"},{label:"考虑怎么分类",type:"folder"}];
-      steps.forEach((step,i)=>{
-        const x=835+i*220;
-        reveal(q,.18+i*.38,()=>{
-          rr(x,315,190,180,17,C.white,"#cad8bc");icon(step.type,x+74,350,42,"#76985b");
-          text(step.label,x+95,433,21,C.green,500,"center");
-        },12,.28);
-        if(i<2)reveal(q,.45+i*.38,()=>icon("arrow",x+194,387,24,"#a0b78a"),0,.22);
+      // A single editorial illustration: one sentence inside a new document,
+      // with the choice of a folder interrupting the otherwise simple action.
+      shadow(()=>rr(840,223,646,491,18,"#fafbf6","#d1dbc7"),"#25452314",32,16);
+      rr(841,224,644,48,[17,17,0,0],"#edf1e6");
+      for(let i=0;i<3;i++)circle(863+i*12,248,3,"#bac8ae");
+      text("笔记软件 / 新建文档",1163,238,18,"#8b9b7a",400,"center");
+      rr(841,273,154,440,[0,0,0,17],"#eff3e9");
+      text("我的笔记",864,304,20,C.green,500);
+      ["学习","生活","未分类"].forEach((label,i)=>{
+        if(i===2)rr(851,460,134,42,8,"#e2ead8");
+        icon("folder",865,363+i*54,20,"#95aa81");text(label,898,362+i*54,18,"#82946f");
       });
-      reveal(q,1.15,()=>{
-        rr(915,563,422,76,15,C.pale);icon("chat",936,583,31);
-        text("今天终于把实验跑通了",988,586,24,C.ink);
-        text("只是想随手记下这一句。",1136,684,23,C.green,400,"center");
-      },12,.3);
+      text("未命名文档",1033,320,32,C.ink,500);
+      line(1033,381,1446,381,"#e0e7d8");
+      reveal(q,.24,()=>text("今天终于把实验跑通了。",1034,418,25,C.ink),0,.18);
+      group(1-smooth((q-.9)/.2),0,0,()=>line(1321,415,1321,449,"#7a985c",2));
+      reveal(q,.95,()=>{
+        shadow(()=>rr(1167,489,284,196,13,"#fffef8","#cbd7bc"),"#30452220",24,12);
+        text("保存到哪个分类",1188,508,19,C.green,500);
+        ["学习","生活","其他"].forEach((label,i)=>{
+          icon("folder",1189,551+i*38,19,"#91a879");
+          text(label,1220,550+i*38,18,"#81936e");
+        });
+      },10,.22);
+      text("记录示意",1465,689,11,"#a1ae94",400,"right");
     }
   }
 
@@ -560,6 +586,15 @@
     for(let j=1;j<=stop;j++){const s=clamp(p)*j/stop,v=fusionBezier(...points,s);ctx.lineTo(v.x,v.y)}
     ctx.strokeStyle=color;ctx.lineWidth=1.25;ctx.stroke();ctx.restore();
   }
+  function fusionLayout(t){
+    const zoom=clamp((t-1.2)/4.53);
+    return {zoom,x:lerp(1168,830,zoom),y:lerp(290,112,zoom),w:lerp(310,580,zoom),h:lerp(460,720,zoom)};
+  }
+  function fusionFlightPoints(index,arrive){
+    const a={x:276+(index%3)*302,y:340+Math.floor(index/3)*130};
+    const target=fusionLayout(arrive),port={x:target.x,y:target.y+target.h-26};
+    return [a,{x:Math.min(a.x+205,port.x-90),y:a.y},{x:port.x-65,y:a.y},{x:port.x,y:port.y}];
+  }
   function fusionThread(x,y,w,h,t,events,zoom){
     const enterWindow=enter(t,.18,.42);
     group(enterWindow,0,(1-enterWindow)*22,()=>{
@@ -597,38 +632,23 @@
   }
   function scenePurposes(){
     // This whole sequence is choreographed in real playback seconds. Its
-    // arrival, camera move and final caption never inherit source-time jumps.
+    // Departures and window growth share the same real-time interval.
     const t=motionLocalTime;
     background(false,t);head(4,"核心理念");
     const order=CHAT_SOURCE_ORDER;
     const events=order.map((index,n)=>({index,start:1.05+n*.36,arrive:1.05+n*.36+1.8}));
-    const zoom=ease((t-5.85)/.6),sourceFade=1-smooth((t-5.7)/.45);
-    const initialTitle=1-smooth((t-5.5)/.35);
+    const {zoom,x,y,w,h}=fusionLayout(t);
+    const initialTitle=1-smooth((t-1.8)/.5);
     group(initialTitle,0,0,()=>text("多种用途，一个聊天入口。",800,157,60,C.ink,600,"center"));
-    const x=lerp(1168,830,zoom),y=lerp(290,112,zoom),w=lerp(310,580,zoom),h=lerp(460,720,zoom);
     const source={x:136,y:286,w:280,h:108,gap:22};
-    const port={x:1168,y:724};
     const positions=purposes.map((_,i)=>({x:source.x+(i%3)*(source.w+source.gap),y:source.y+Math.floor(i/3)*(source.h+source.gap)}));
-
-    // Subtle curves appear after the complete grid has been read.
-    if(t>.8&&sourceFade>0){
-      events.forEach(e=>{
-        const s=positions[e.index],a={x:s.x+source.w/2,y:s.y+source.h/2};
-        const points=[a,{x:a.x+205,y:a.y},{x:1090,y:a.y},{x:port.x,y:port.y}];
-        fusionPath(points,1,"#b7cba4",sourceFade*.22*enter(t,.8,.25));
-      });
-    }
     purposes.forEach(([name,label],i)=>{
       const e=events.find(v=>v.index===i),p=positions[i],ready=enter(t,.06+i*.035,.4);
-      const peel=smooth((t-e.start)/.24),gone=smooth((t-e.start)/.15),a=ready*sourceFade;
+      const gone=smooth((t-e.start)/.15),a=ready*(1-gone);
       group(a,0,(1-ready)*20,()=>{
-        // The unlabelled outline remains briefly, making each departure legible.
-        rr(p.x,p.y,source.w,source.h,15,lerp(1,0,gone)>.01?"#f8fbf2":"#f0f4e8","#d5e1c8");
-        group(1-gone,0,0,()=>{
-          icon(name,p.x+source.w/2-16,p.y+21,32,"#729454");
-          text(label,p.x+source.w/2,p.y+71,23,"#4b653d",400,"center");
-        });
-        group((1-Math.abs(peel*2-1))*.7,0,0,()=>rr(p.x,p.y,source.w,source.h,15,null,"#9bbf78",2));
+        rr(p.x,p.y,source.w,source.h,15,"#f8fbf2","#d5e1c8");
+        icon(name,p.x+source.w/2-16,p.y+21,32,"#729454");
+        text(label,p.x+source.w/2,p.y+71,23,"#4b653d",400,"center");
       });
     });
     // Right column leaves first, so later rows cross vacated cells rather than
@@ -636,8 +656,7 @@
     events.forEach(e=>{
       const flight=clamp((t-e.start-.15)/1.65);
       if(t<e.start+.15||t>e.arrive+.08)return;
-      const s=positions[e.index],a={x:s.x+source.w/2,y:s.y+source.h/2};
-      const points=[a,{x:a.x+205,y:a.y},{x:1090,y:a.y},{x:port.x,y:port.y}];
+      const s=positions[e.index],points=fusionFlightPoints(e.index,e.arrive);
       const curveProgress=fusionParameterAtDistance(points,flight),p=fusionBezier(...points,curveProgress);
       const into=1-smooth((flight-.83)/.17),appearance=enter(t,e.start+.15,.15),width=lerp(202,105,smooth((flight-.65)/.35)),height=lerp(51,28,flight);
       group(appearance*into,0,0,()=>{
@@ -649,9 +668,8 @@
       },1,p.x,p.y,(flight<.8?Math.sin(flight*Math.PI)*.035:0)*(s.y<500?1:-1));
     });
     fusionThread(x,y,w,h,t,events,zoom);
-    group(enter(t,.55,.3)*(1-smooth((t-5.5)/.35)),0,0,()=>text("同一条时间线",1323,778,17,"#8aa273",400,"center"));
-    group(enter(t,.7,.3)*(1-smooth((t-5.5)/.35)),0,0,()=>subtitle(["不需要提前分类，直接发送。"]));
-    const finalTitle=enter(t,5.85,.35);
+    group(enter(t,.7,.3)*(1-smooth((t-4.25)/.35)),0,0,()=>subtitle(["不需要提前分类，直接发送。"]));
+    const finalTitle=enter(t,4.35,.35);
     group(finalTitle,0,(1-finalTitle)*25,()=>{
       lines(["多种用途，","一个聊天入口。"],110,258,58,C.ink,600,1.4);
       lines(["所有信息先作为普通消息，","进入同一条时间线。"],114,475,25,C.muted,400,1.95);
@@ -660,7 +678,7 @@
     });
   }
 
-  const messageDelays=[1,3,5,7,9,11,13,15,17];
+  const messageDelays=[0.15,0.49,0.83,1.17,1.51,1.85,2.19,2.53,2.87];
   function fullChat(x,y,w,t){
     const s=portrait?1.18:1,h=720*s;
     shadow(()=>rr(x,y,w,h,20,C.white,"#cfddbf"),"#2545231c",40,20);
@@ -672,7 +690,7 @@
     ctx.beginPath();ctx.rect(x+pad-3,y+87*s,w-pad*2+6,h-139*s);ctx.clip();
     let count=0;
     items.forEach((m,i)=>{
-      const p=enter(t,messageDelays[i],.4),slot=slots[i],bw=slot.w,hh=slot.h,xx=slot.x,yy=slot.y;
+      const p=enter(t,messageDelays[i],.16),slot=slots[i],bw=slot.w,hh=slot.h,xx=slot.x,yy=slot.y;
       if(p>.8)count++;
       chatBubbleFrame(slot);
       if(p<1)group(1-p,0,0,()=>chatPlaceholder(slot,CHAT_SOURCE_ORDER[i]));
@@ -1089,10 +1107,10 @@
     {start:0,end:3,label:"开篇",description:"这是对一个项目设想的描述，不是项目名称。",sourceTimes:[[0.0,0],[2.175,2.9],[3,9]],draw:sceneTitle},
     {start:3,end:14,label:"我和文件传输助手",description:"我经常给自己发消息。除了文件，还会直接发送备忘、记录、文案、讲稿和单词。",sourceTimes:[[0.0,0],[3.006667,4.1],[3.373333,8.1],[3.666667,8.5],[6.673333,12.6],[7.04,17.1],[7.333333,17.5],[10.34,21.6],[11,27]],draw:sceneOrigin},
     {start:14,end:23,label:"零碎的生活记录",description:"我会留下喜欢的摄影作品、想看的书和电影、想补的番；零碎消息也成了生活记录。",sourceTimes:[[0.0,0],[2.3625,4.35],[3.0,7],[5.3625,11.35],[6.0,14],[8.3625,18.35],[9,21]],draw:sceneMemory},
-    {start:23,end:31,label:"现有方案的不便",description:"常用聊天软件不方便多台电脑同时登录；笔记软件需要打开、新建文档和考虑分类。",sourceTimes:[[0,0],[8,8]],draw:sceneFriction},
-    {start:31,end:37,label:"想自己做一个",description:"macOS、Windows 和 Linux 分别连接云端，找回完整历史记录。",sourceTimes:[[0.0,0],[3.75,5],[4.65,11.5],[6,18]],draw:sceneNeed},
-    {start:37,end:44,label:"核心理念",description:"九种用途沿各自路径成为消息，共同进入唯一聊天入口，保留在同一条时间线。",sourceTimes:[[0,0],[5.85,11.15],[6.45,13.75],[7,18]],draw:scenePurposes},
-    {start:44,end:51,label:"给自己发消息",description:"原案中的八条文字和文件消息，以及建筑摄影。",sourceTimes:[[0.0,0],[6.2,18.2],[7,28]],draw:sceneChat},
+    {start:23,end:34,label:"现有方案的不便",description:"常用聊天软件不方便多台电脑同时登录；飞书免费版仅可查看最近 18 个月的聊天记录；笔记软件需要打开、新建文档和考虑分类。",sourceTimes:[[0,0],[11,11]],draw:sceneFriction},
+    {start:34,end:40,label:"想自己做一个",description:"macOS、Windows 和 Linux 分别连接云端，找回完整历史记录。",sourceTimes:[[0.0,0],[3.75,5],[4.65,11.5],[6,18]],draw:sceneNeed},
+    {start:40,end:47,label:"核心理念",description:"九种用途沿各自路径成为消息，共同进入唯一聊天入口，保留在同一条时间线。",sourceTimes:[[0,0],[5.85,11.15],[6.45,13.75],[7,18]],draw:scenePurposes},
+    {start:47,end:51,label:"给自己发消息",description:"原案中的八条文字和文件消息，以及建筑摄影。",sourceTimes:[[0,0],[4,4]],draw:sceneChat},
     {start:51,end:57,label:"保存与整理",description:"云端保存原始记录，AI 整理结果可以修改，不影响原始消息。",sourceTimes:[[0.0,0],[4.65,6.2],[6,19]],draw:sceneProcess},
     {start:57,end:64,label:"整理后的信息",description:"电影与待办提取，再形成六种信息视图。",sourceTimes:[[0.0,0],[2.94,4.2],[3.92,10.6],[4.2,11],[5.88,13.4],[7,23]],draw:sceneOrganize},
     {start:64,end:73,label:"常用操作",description:"消息与文件传输、编辑、预览、搜索，以及离线缓存、备份恢复和完整导出。",sourceTimes:[[0.0,0],[3.375,6],[4.2,9.6],[4.5,10],[7.875,16],[9,20]],draw:sceneFeatures},

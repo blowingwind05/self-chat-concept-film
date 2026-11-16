@@ -67,7 +67,7 @@
       "pan_end": 0.05
     },
     {
-      "time": 32.05,
+      "time": 35.05,
       "type": "soft_bloom",
       "gain": 0.06,
       "pan": 0,
@@ -75,7 +75,7 @@
       "note": "Cloud node opening; no heavenly sparkle"
     },
     {
-      "time": 34.525,
+      "time": 37.525,
       "type": "air_link",
       "gain": 0.045,
       "pan": -0.15,
@@ -84,7 +84,7 @@
       "note": "One restrained network connection layer, no packet ticks"
     },
     {
-      "time": 37.12,
+      "time": 40.12,
       "type": "felt_key",
       "gain": 0.05,
       "pan": -0.15,
@@ -92,7 +92,7 @@
       "note": "Core grid; the music introduces the pulse here"
     },
     {
-      "time": 38.2,
+      "time": 41.2,
       "type": "fusion_stream",
       "gain": 0.07,
       "pan": -0.48,
@@ -113,7 +113,7 @@
       "note": "ONE coherent airy movement, shaped by nine overlapping journeys; not nine loud whooshes"
     },
     {
-      "time": 39.85,
+      "time": 42.85,
       "type": "felt_arrival",
       "gain": 0.038,
       "pan": 0.48,
@@ -122,7 +122,7 @@
       "note": "Very short, damped woody contact; no notification pitch"
     },
     {
-      "time": 40.21,
+      "time": 43.21,
       "type": "felt_arrival",
       "gain": 0.04,
       "pan": 0.48,
@@ -131,7 +131,7 @@
       "note": "Very short, damped woody contact; no notification pitch"
     },
     {
-      "time": 40.57,
+      "time": 43.57,
       "type": "felt_arrival",
       "gain": 0.041999999999999996,
       "pan": 0.48,
@@ -140,7 +140,7 @@
       "note": "Very short, damped woody contact; no notification pitch"
     },
     {
-      "time": 40.93,
+      "time": 43.93,
       "type": "felt_arrival",
       "gain": 0.044,
       "pan": 0.48,
@@ -149,7 +149,7 @@
       "note": "Very short, damped woody contact; no notification pitch"
     },
     {
-      "time": 41.29,
+      "time": 44.29,
       "type": "felt_arrival",
       "gain": 0.046,
       "pan": 0.48,
@@ -158,7 +158,7 @@
       "note": "Very short, damped woody contact; no notification pitch"
     },
     {
-      "time": 41.65,
+      "time": 44.65,
       "type": "felt_arrival",
       "gain": 0.048,
       "pan": 0.48,
@@ -167,7 +167,7 @@
       "note": "Very short, damped woody contact; no notification pitch"
     },
     {
-      "time": 42.01,
+      "time": 45.01,
       "type": "felt_arrival",
       "gain": 0.05,
       "pan": 0.48,
@@ -176,7 +176,7 @@
       "note": "Very short, damped woody contact; no notification pitch"
     },
     {
-      "time": 42.37,
+      "time": 45.37,
       "type": "felt_arrival",
       "gain": 0.052,
       "pan": 0.48,
@@ -185,7 +185,7 @@
       "note": "Very short, damped woody contact; no notification pitch"
     },
     {
-      "time": 42.73,
+      "time": 45.73,
       "type": "felt_arrival",
       "gain": 0.054,
       "pan": 0.48,
@@ -194,94 +194,103 @@
       "note": "Very short, damped woody contact; no notification pitch"
     },
     {
-      "time": 42.85,
+      "time": 45.13,
       "type": "perspective_bloom",
       "gain": 0.047,
       "pan": 0.4,
       "duration": 0.6,
       "pan_end": 0.1,
-      "note": "Continuous warm widening matched to camera enlargement; no bass-drop"
+      "note": "Final 0.6 seconds of concurrent window growth, settling with the last arrival"
     },
     {
-      "time": 44.34066,
+      "time": 47.15,
       "type": "felt_arrival",
       "gain": 0.047,
       "pan": 0.46,
       "duration": 0.085,
       "variation": 0,
-      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
+      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails",
+      "contact_gain": 1.65
     },
     {
-      "time": 45.021978,
+      "time": 47.49,
       "type": "felt_arrival",
       "gain": 0.044,
       "pan": 0.46,
       "duration": 0.085,
       "variation": 1,
-      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
+      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails",
+      "contact_gain": 1.65
     },
     {
-      "time": 45.703297,
+      "time": 47.83,
       "type": "felt_arrival",
       "gain": 0.04,
       "pan": 0.46,
       "duration": 0.085,
       "variation": 2,
-      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
+      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails",
+      "contact_gain": 1.65
     },
     {
-      "time": 46.384615,
+      "time": 48.17,
       "type": "paper_tap",
       "gain": 0.052,
       "pan": 0.46,
       "duration": 0.085,
       "variation": 3,
-      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
+      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails",
+      "contact_gain": 1.35
     },
     {
-      "time": 47.065934,
+      "time": 48.51,
       "type": "photo_paper",
       "gain": 0.058,
       "pan": 0.46,
       "duration": 0.13,
       "variation": 4,
-      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
+      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails",
+      "contact_gain": 0.9
     },
     {
-      "time": 47.747253,
+      "time": 48.85,
       "type": "felt_arrival",
       "gain": 0.043,
       "pan": 0.46,
       "duration": 0.085,
       "variation": 5,
-      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
+      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails",
+      "contact_gain": 1.35
     },
     {
-      "time": 48.428572,
+      "time": 49.19,
       "type": "felt_arrival",
       "gain": 0.046,
       "pan": 0.46,
       "duration": 0.085,
       "variation": 6,
-      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
+      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails",
+      "contact_gain": 1.35
     },
     {
-      "time": 49.10989,
+      "time": 49.53,
       "type": "felt_arrival",
       "gain": 0.043,
       "pan": 0.46,
       "duration": 0.085,
       "variation": 7,
-      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
+      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails",
+      "contact_gain": 1.35
     },
     {
-      "time": 49.791209,
+      "time": 49.87,
       "type": "paper_tap",
       "gain": 0.055,
       "pan": 0.46,
       "duration": 0.085,
       "variation": 8,
-      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
+      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails",
+      "contact_gain": 1.35
     },
     {
       "time": 51.1,
