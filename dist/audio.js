@@ -3,19 +3,19 @@
   "use strict";
 
   const AudioEngine = window.AudioContext || window.webkitAudioContext;
-  const SCENE_TIMES = [10, 35, 55, 73, 87, 115, 136, 147, 161, 171, 181, 200, 222, 234, 248, 268, 280, 292, 312];
-  const MESSAGE_TIMES = [88, 90, 92, 94, 96, 98, 100, 102, 104];
-  const CHORD_TIMES = [0.4, 36, 74.2, 116.2, 148.2, 182.2, 223.2, 269.2, 313.2];
+  const SCENE_TIMES = [9, 36, 57, 75, 93, 121, 140, 151, 163, 173, 183, 201, 231, 239, 251, 263, 283];
+  const MESSAGE_TIMES = [94, 96, 98, 100, 102, 104, 106, 108, 110];
+  const CHORD_TIMES = [0.4, 37, 76.2, 122.2, 152.2, 184.2, 240.2, 284.2];
   const TONES = [523.251, 587.33, 659.255, 783.991, 880];
 
   const cues = [
     ...SCENE_TIMES.map((time, index) => ({ time, type: "paper", index })),
     ...MESSAGE_TIMES.map((time, index) => ({ time, type: "message", index })),
     ...CHORD_TIMES.map((time, index) => ({ time, type: "chord", index })),
-    { time: 139.4, type: "message", index: 2 },
-    { time: 145, type: "message", index: 4 },
-    { time: 158, type: "resolve", index: 0 },
-    { time: 322.3, type: "resolve", index: 1 },
+    { time: 143.4, type: "message", index: 2 },
+    { time: 149, type: "message", index: 4 },
+    { time: 160, type: "resolve", index: 0 },
+    { time: 293.3, type: "resolve", index: 1 },
   ].sort((a, b) => a.time - b.time);
 
   function nextCue(time) {
@@ -30,8 +30,8 @@
   }
 
   class InboxFilmSound {
-    constructor({ duration = 325 } = {}) {
-      this.duration = Number.isFinite(duration) && duration > 0 ? duration : 325;
+    constructor({ duration = 296 } = {}) {
+      this.duration = Number.isFinite(duration) && duration > 0 ? duration : 296;
       this.supported = Boolean(AudioEngine);
       this.muted = false;
       this._context = null;

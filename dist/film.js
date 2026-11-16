@@ -82,7 +82,7 @@
   function head(index,label,dark=false){
     const m=portrait?60:70,fg=dark?"#b5c99c":"#6e825e",fs=portrait?17:14;
     text("项目设想  /  概念示意",m,portrait?48:42,fs,fg);
-    text(String(index+1).padStart(2,"0")+" / 16",W-m,portrait?48:42,fs,dark?"#739269":"#9baa8a",400,"right","Consolas,monospace");
+    text(String(index+1).padStart(2,"0")+" / "+String(scenes.length).padStart(2,"0"),W-m,portrait?48:42,fs,dark?"#739269":"#9baa8a",400,"right","Consolas,monospace");
     line(m,portrait?90:78,W-m,portrait?90:78,dark?"#4a6341":"#d3dcc8");
     if(label)text(label,m,portrait?119:108,portrait?17:14,fg);
   }
@@ -138,60 +138,348 @@
       else{smallCard(1200,295,315,105,"file","讲稿_v3.pdf","PDF · 1.8 MB",.07,t);group(1,0,0,()=>{shadow(()=>rr(815,610,290,118,15,C.white,"#d9e2cd"));text("随手记下的单词",838,629,12,"#9aa58a");text("serendipity",838,654,39,C.ink,400,"left","Georgia,serif");text("偶然发现美好事物的机缘",838,701,12,"#8c9d77")},1,960,668,-.07)}
     });
   }
+  function storyPanel(title,t){
+    shadow(()=>rr(840,205,650,515,20,C.white,"#d3dfc7"),"#23472e12",30,15);
+    rr(864,229,42,42,12,C.pale);icon("chat",873,238,24);
+    text(title,922,233,25,C.green,500);
+    text("原案示例",1459,242,14,"#96a785",400,"right");
+    line(865,292,1464,292,"#e0e7d7");
+  }
+
+  function storyBubble(value,x,y,w,kind,t,delay=0){
+    reveal(t,delay,()=>{
+      rr(x,y,w,87,13,C.pale);
+      text(value,x+20,y+18,27,C.ink,500);
+      if(kind)text(kind,x+21,y+58,16,"#839a6b");
+    },24,.7);
+  }
+
+  function secureIdentity(x,y,w,h){
+    rr(x,y,w,h,18,"#2e513b","#6e8d59");
+    circle(x+62,y+49,17,null,"#c6dda6",2);
+    ctx.beginPath();ctx.arc(x+62,y+96,27,Math.PI,0);ctx.strokeStyle="#c6dda6";ctx.lineWidth=2;ctx.stroke();
+    text("账号身份",x+111,y+39,29,"#dbe9cb",500);
+    text("身份验证",x+113,y+81,18,"#93b479");
+  }
+
+  function secureFocusList(items,active,y){
+    items.forEach((item,i)=>{
+      const fg=i===active?"#e3efd3":"#729569";
+      text(String(i+1).padStart(2,"0"),114,y+i*73,19,i===active?"#afcc8a":"#55794a",400,"left","Consolas,monospace");
+      text(item,159,y-3+i*73,30,fg,i===active?500:400);
+      if(i===active)line(115,y+44+i*73,156,y+44+i*73,"#b1cf88",2);
+    });
+  }
+
   function sceneOrigin(t){
-    background(false,t);head(1,"灵感来源");
-    const x=portrait?65:110, y=portrait?195:185, fs=portrait?57:66;
-    reveal(t,.1,()=>lines(["文件传输助手，","早已不止是","文件传输助手。"],x,y,fs,C.ink,600,1.32));
-    const story=t<8?"我现在经常使用微信的文件传输助手，或者直接给自己的 QQ 账号发消息。":t<16?"除了在不同设备之间传文字和文件，我还会把突然想到的灵感、学习工作中的记录、生活中需要记住的事情发进去。":"偶尔也会在里面写文案、写和看面试或 Presentation 的稿子，甚至顺手记下不认识的单词。";
-    reveal(t,.9,()=>paragraph(story,x,y+fs*4.4,portrait?720:620,portrait?27:25,C.muted,1.95),25);
-    if(portrait){
-      reveal(t,1.8,()=>smallCard(115,670,655,105,"film","想看《布达佩斯大饭店》","书影音清单",.025,t));
-      reveal(t,3.1,()=>smallCard(80,810,520,105,"file","讲稿_v3.pdf","PDF · 1.8 MB",-.045,t));
-      reveal(t,4.7,()=>{group(1,0,0,()=>{rr(575,825,225,220,16,C.white,"#d8e0cb");photoCrop(585,835,205,200,10)},1,680,920,.055)});
-      reveal(t,6.2,()=>{text("serendipity",130,965,44,C.green,400,"left","Georgia,serif");text("偶然发现美好事物的机缘",132,1021,20,"#859672")});
+    background(false,t);head(1,"我和文件传输助手的故事");
+    const beat=t<8.5?0:t<17.5?1:2,q=t-[0,8.5,17.5][beat];
+    const scripts=[
+      ["我现在经常使用微信的文件传输助手，","或者直接给自己的 QQ 账号发消息。"],
+      ["突然想到的灵感、学习工作中的记录，","生活中需要记住的事情，都会发进去。"],
+      ["偶尔会在里面写文案、看面试和汇报稿，","甚至顺手记下不认识的单词。"]
+    ];
+    reveal(t,.1,()=>lines(["文件传输助手，","早已不止是","文件传输助手。"],110,185,64,C.ink,600,1.32));
+    reveal(q,.25,()=>lines(scripts[beat],114,499,26,C.muted,400,1.95));
+    reveal(q,.35,()=>text(["文字与文件","备忘与记录","稿件与单词"][beat],114,685,21,"#8ba171"));
+    if(beat===0){
+      reveal(q,.15,()=>storyPanel("文件传输助手 / 给自己发消息",q));
+      reveal(q,.8,()=>{rr(940,330,475,110,14,C.pale);icon("file",964,359,38,"#75975b");text("讲稿_v3.pdf",1024,351,30,C.ink,500);text("PDF · 1.8 MB",1026,397,18,"#8b9f77")});
+      reveal(q,2.2,()=>{rr(915,483,500,110,14,C.pale);icon("folder",941,513,38,"#75975b");text("project-files.zip",1002,505,29,C.ink,500);text("128 MB",1004,550,18,"#8b9f77")});
+      reveal(q,3.4,()=>text("在不同设备之间传递文字和文件",1165,652,22,"#849c6e",400,"center"));
+    }else if(beat===1){
+      reveal(q,.15,()=>storyPanel("随手留下的记录",q));
+      storyBubble("明早给老师发邮件",1020,342,395,"待办与日程",q,.65);
+      storyBubble("今天终于把实验跑通了",942,485,473,"学习工作中的记录",q,2);
+      reveal(q,3.2,()=>text("灵感 · 学习工作 · 生活中要记住的事",1165,652,20,"#849c6e",400,"center"));
     }else{
-      reveal(t,1.8,()=>smallCard(850,190,590,110,"film","想看《布达佩斯大饭店》","书影音清单",.035,t));
-      reveal(t,3.1,()=>smallCard(925,350,480,110,"file","讲稿_v3.pdf","PDF · 1.8 MB",-.04,t));
-      reveal(t,4.7,()=>{group(1,0,0,()=>{shadow(()=>rr(1215,505,235,230,16,C.white,"#d8e0cb"));photoCrop(1225,515,215,210,10)},1,1330,620,.055)});
-      reveal(t,6.2,()=>{text("serendipity",845,570,57,C.green,400,"left","Georgia,serif");text("偶然发现美好事物的机缘",850,645,22,"#859672")});
+      reveal(q,.15,()=>storyPanel("写稿，也顺手记个单词",q));
+      reveal(q,.65,()=>{rr(883,325,355,274,12,"#f0f3e9","#dbe5cf");text("Presentation 稿件",905,348,24,C.green,500);lines(["各位老师好，我今天汇报的","题目是……首先介绍一下","课题的研究背景……"],905,405,20,"#809469",400,1.9);line(905,547,1198,547,"#cddcbd");text("讲稿_v3.pdf",905,565,17,"#8da17a")});
+      reveal(q,1.9,()=>{rr(1260,325,191,274,12,C.pale);text("顺手记下",1281,351,18,"#90a578");text("serendipity",1280,409,25,C.green,400,"left","Georgia,serif");lines(["偶然发现","美好事物","的机缘"],1282,462,21,"#7b9664",400,1.6)});
+      reveal(q,3.3,()=>text("同一个聊天入口，留下不同的内容",1165,652,21,"#849c6e",400,"center"));
     }
-    reveal(t,4,()=>subtitle(["文件传输助手，早已不止是文件传输助手。"]));
+    reveal(q,1.5,()=>subtitle([["除了传文件，也逐渐当成了备忘录。","有时候直接当成备忘录、日程提醒或者 To-do List 来用。","这些随手记下的内容，之后还会再打开看。"][beat]]));
+    phaseVeil(t,8.5);phaseVeil(t,17.5);
   }
-  function drawDevice(x,y,w,h,name,type="desktop",accent=false){
-    const fill=accent?"#e5edd8":"#f9faf4",stroke=accent?"#9cb889":"#c9d7bb";
-    if(type==="phone"){rr(x+w*.34,y,w*.32,h,14,fill,stroke,2);line(x+w*.44,y+10,x+w*.55,y+10,stroke,2);for(let i=0;i<3;i++)rr(x+w*.38,y+42+i*23,w*.23,13,4,"#d5e3c7")}
-    else{rr(x,y,w,h-22,12,fill,stroke,2);rr(x+14,y+15,w-28,h-54,5,"#ecf1e5");for(let i=0;i<3;i++){rr(x+w*.3,y+32+i*28,w*.55,18,5,i===1?"#c3d5ad":"#d9e5cd")}if(type==="laptop"){ctx.beginPath();ctx.moveTo(x-14,y+h-23);ctx.lineTo(x+w+14,y+h-23);ctx.lineTo(x+w+1,y+h-9);ctx.lineTo(x-1,y+h-9);ctx.closePath();ctx.fillStyle="#ccd9bd";ctx.fill()}else{line(x+w*.5,y+h-22,x+w*.5,y+h+10,stroke,4);line(x+w*.3,y+h+12,x+w*.7,y+h+12,stroke,3)}}
-    if(name)text(name,x+w/2,y+h+35,portrait?24:20,"#71865f",400,"center");
+
+  function deviceScreenContent(x, y, w, h, accent = false) {
+    const inset = Math.max(3, Math.min(w, h) * .055);
+    const sidebar = w * .22;
+    const tint = accent ? "#c8d9b6" : "#d8e4cc";
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(x, y, w, h);
+    ctx.clip();
+    rr(x, y, w, h, Math.max(2, inset * .7), "#edf2e7");
+    rr(x, y, sidebar, h, 0, "#e0e9d5");
+    for (let i = 0; i < 3; i++) {
+      rr(x + inset, y + inset * (1.4 + i * 2.3), sidebar - inset * 2,
+        Math.max(2, inset * .55), 1.5, "#b8cba5");
+    }
+    const conversationX = x + sidebar + inset;
+    const conversationW = w - sidebar - inset * 2;
+    const bubbleH = Math.max(4, h * .12);
+    const gap = h * .09;
+    [ .84, .66, .77 ].forEach((fraction, i) => {
+      const bw = conversationW * fraction;
+      rr(x + w - inset - bw, y + inset * 1.4 + i * (bubbleH + gap),
+        bw, bubbleH, Math.max(2, bubbleH * .28), tint);
+    });
+    rr(conversationX, y + h - inset * 1.5 - bubbleH * .65,
+      conversationW, bubbleH * .65, Math.max(2, bubbleH * .2), "#dfe8d5");
+    ctx.restore();
   }
-  function sceneNeed(t){
-    background(false,t);head(3,"为什么想自己做一个");
-    reveal(t,.1,()=>lines(portrait?["我希望所有消息和文件，","都能长期保存在云端。"]:["我希望所有消息和文件","都能长期保存在云端。"],portrait?65:110,portrait?195:175,portrait?52:64,C.ink,600,1.38));
-    const dy=portrait?610:440,dw=portrait?210:290,dh=portrait?165:190;
-    const xs=portrait?[65,345,625]:[235,655,1075];
-    xs.forEach((x,i)=>reveal(t,1.1+i*.65,()=>drawDevice(x,dy,dw,dh,["macOS","Windows","Linux"][i],i===1?"laptop":"desktop",i===1)));
-    const cp=enter(t,3.1,1.2);
-    for(let i=0;i<2;i++){const a=xs[i]+dw,b=xs[i+1];dotLine([[a,dy+80],[b,dy+80]],cp,"#a1b88d",2);if(t>4.4)packet([[a,dy+80],[b,dy+80]],t*.4+i*.5,"#7ea163")}
-    reveal(t,4.2,()=>{icon("cloud",W/2-24,portrait?895:366,48,"#6f9751");text("完整的历史记录",W/2,portrait?968:716,portrait?28:23,C.green,400,"center")});
-    reveal(t,1.9,()=>subtitle(t<6?["常用聊天软件不方便多台电脑同时登录，只能来回切换。"]:t<11?["换了设备，也能找回完整的历史记录。"]:t<15?["消息多了难免杂乱，正好可以交给 AI 帮忙整理。"]:["既然现有软件不能完全满足这些需求，干脆自己做一个好了。"]));
+
+  function deviceCloudNode(x, y, w, h, title, detail) {
+    shadow(() => rr(x, y, w, h, 19, "#f8fbf1", "#c7d8b7"),
+      "#2a4f2510", 25, 10);
+    rr(x + 22, y + 25, 61, 61, 17, "#e0ebd2");
+    icon("cloud", x + 34, y + 37, 37, "#608b46");
+    text(title, x + 108, y + 24, 30, C.ink, 500);
+    text(detail, x + 109, y + 70, 19, "#7a9067");
+  }
+
+  function deviceIndependentLink(points, t, delay, speed = .25) {
+    // Each path has one cloud port and one client. There is no client-to-client
+    // segment and no shared horizontal bus that can look like device chaining.
+    const p = enter(t, delay, 1.15);
+    dotLine(points, p, "#9eb98a", 1.7);
+    if (t > delay + 1.3) {
+      packet(points.slice().reverse(), (t - delay) * speed, "#739c55");
+    }
+  }
+
+  function drawDevice(x, y, w, h, name, type = "desktop", accent = false) {
+    // w × h is an allocation, including an optional platform label. Screens keep
+    // their proportions; shrinking the allocation never stretches a device.
+    const labelSpace = name ? 36 : 0;
+    const availableH = Math.max(24, h - labelSpace);
+    const frame = accent ? "#9db88b" : "#b8cba8";
+    const body = accent ? "#e3ecd6" : "#f8faf2";
+    const cx = x + w / 2;
+    let actualW, actualH;
+
+    if (type === "phone") {
+      // The complete phone body is 9:18, not a tall screen inside a wide frame.
+      actualW = Math.min(w * .46, availableH / 2);
+      actualH = actualW * 2;
+      const left = cx - actualW / 2;
+      const radius = actualW * .15;
+      rr(left, y, actualW, actualH, radius, body, frame, 1.8);
+      const bezel = Math.max(4, actualW * .065);
+      const top = Math.max(11, actualH * .105);
+      deviceScreenContent(left + bezel, y + top, actualW - bezel * 2,
+        actualH - top - bezel * 1.8, accent);
+      rr(cx - actualW * .16, y + actualH * .043, actualW * .32,
+        Math.max(2.5, actualW * .035), 2, "#a5ba92");
+    } else if (type === "web" || type === "browser") {
+      // A browser window has its own chrome and a 16:10 outer ratio.
+      actualW = Math.min(w, availableH * 1.6);
+      actualH = actualW / 1.6;
+      const left = cx - actualW / 2;
+      const bar = Math.max(15, actualH * .18);
+      rr(left, y, actualW, actualH, 9, body, frame, 1.8);
+      rr(left + 1, y + 1, actualW - 2, bar, [8, 8, 0, 0], "#dfe8d4");
+      for (let i = 0; i < 3; i++) {
+        circle(left + 9 + i * 7, y + bar / 2, 1.8, "#a4b98f");
+      }
+      rr(left + actualW * .27, y + bar * .28, actualW * .59,
+        bar * .4, 3, "#f2f6e9");
+      const inset = Math.max(5, actualW * .028);
+      deviceScreenContent(left + inset, y + bar + inset,
+        actualW - inset * 2, actualH - bar - inset * 2, accent);
+    } else if (type === "laptop") {
+      // The display is 16:10; the keyboard base adds only a shallow strip.
+      actualW = Math.min(w / 1.06, availableH / .7);
+      const screenH = actualW / 1.6;
+      const baseH = actualW * .055;
+      actualH = screenH + baseH;
+      const left = cx - actualW / 2;
+      rr(left, y, actualW, screenH, actualW * .035, body, frame, 1.8);
+      const bezel = Math.max(6, actualW * .035);
+      deviceScreenContent(left + bezel, y + bezel,
+        actualW - bezel * 2, screenH - bezel * 2, accent);
+      ctx.beginPath();
+      ctx.moveTo(left - actualW * .03, y + screenH - 1);
+      ctx.lineTo(left + actualW * 1.03, y + screenH - 1);
+      ctx.lineTo(left + actualW * .985, y + screenH + baseH);
+      ctx.lineTo(left + actualW * .015, y + screenH + baseH);
+      ctx.closePath();
+      ctx.fillStyle = "#c4d4b5";
+      ctx.fill();
+      rr(cx - actualW * .105, y + screenH + 1,
+        actualW * .21, Math.max(2, baseH * .28), 2, "#9eb68a");
+    } else {
+      // A desktop display is 16:10, with a short stand outside the screen.
+      actualW = Math.min(w, availableH / .738);
+      const screenH = actualW / 1.6;
+      const neckH = actualW * .095;
+      const baseH = actualW * .018;
+      actualH = screenH + neckH + baseH;
+      const left = cx - actualW / 2;
+      rr(left, y, actualW, screenH, actualW * .035, body, frame, 1.8);
+      const bezel = Math.max(6, actualW * .035);
+      deviceScreenContent(left + bezel, y + bezel,
+        actualW - bezel * 2, screenH - bezel * 2, accent);
+      rr(cx - actualW * .035, y + screenH, actualW * .07,
+        neckH, 1, "#b0c59a");
+      rr(cx - actualW * .22, y + screenH + neckH,
+        actualW * .44, Math.max(3, baseH), 2, "#9fb78b");
+    }
+
+    if (name) {
+      text(name, cx, y + availableH + 11, 22, "#657f53", 400, "center");
+    }
+    return { cx, top: y, width: actualW, height: actualH };
+  }
+
+  function sceneNeed(t) {
+    background(false, t);
+    head(3, "原案中的需求");
+    reveal(t, .1, () => lines([
+      "我希望所有消息和文件，",
+      "都能长期保存在云端。"
+    ], 110, 165, 54, C.ink, 600, 1.36));
+
+    const clients = [
+      { cx: 350, name: "macOS", type: "laptop" },
+      { cx: 800, name: "Windows", type: "desktop" },
+      { cx: 1250, name: "Linux", type: "desktop" }
+    ];
+    const paths = [
+      [[690, 460], [690, 505], [350, 505], [350, 580]],
+      [[800, 460], [800, 580]],
+      [[910, 460], [910, 505], [1250, 505], [1250, 580]]
+    ];
+
+    paths.forEach((points, i) => deviceIndependentLink(points, t, 3.2 + i * .3));
+    reveal(t, 1.05, () => {
+      deviceCloudNode(570, 340, 460, 120,
+        "云端长期存储", "消息与附件 · 完整历史记录");
+      text("设想", 1006, 357, 13, "#93a47f", 400, "right");
+    });
+    clients.forEach((client, i) => reveal(t, 1.8 + i * .4, () => {
+      drawDevice(client.cx - 145, 580, 290, 200,
+        client.name, client.type, false);
+    }, 24));
+
+    reveal(t, 5.25, () => subtitle([
+      t < 11
+        ? "换了设备，也能找回完整的历史记录。"
+        : "历史记录不需要依赖旧设备在线。"
+    ]));
+  }
+
+  function fusionBezier(a,b,c,d,p){
+    const q=1-p;
+    return {x:q*q*q*a.x+3*q*q*p*b.x+3*q*p*p*c.x+p*p*p*d.x,y:q*q*q*a.y+3*q*q*p*b.y+3*q*p*p*c.y+p*p*p*d.y};
+  }
+  function fusionPath(points,p,color,alpha=1){
+    ctx.save();ctx.globalAlpha*=alpha;ctx.beginPath();ctx.moveTo(points[0].x,points[0].y);
+    const count=40,stop=Math.max(1,Math.ceil(clamp(p)*count));
+    for(let j=1;j<=stop;j++){const s=clamp(p)*j/stop,v=fusionBezier(...points,s);ctx.lineTo(v.x,v.y)}
+    ctx.strokeStyle=color;ctx.lineWidth=1.25;ctx.stroke();ctx.restore();
+  }
+  function fusionThread(x,y,w,h,t,events,zoom){
+    const enterWindow=enter(t,.9,1.1);
+    group(enterWindow,0,(1-enterWindow)*22,()=>{
+      shadow(()=>rr(x,y,w,h,lerp(17,20,zoom),C.white,"#cbdabb"),"#2545231c",35,17);
+      const pad=lerp(16,22,zoom),header=lerp(67,77,zoom),avatar=lerp(29,40,zoom),fs=lerp(15,21,zoom);
+      rr(x+pad,y+18,avatar,avatar,lerp(9,12,zoom),C.pale);
+      icon("chat",x+pad+avatar*.2,y+18+avatar*.2,avatar*.6);
+      text("给自己发消息",x+pad+avatar+12,y+17,fs,C.ink,600);
+      text("我的聊天记录",x+pad+avatar+12,y+19+fs+7,lerp(10,13,zoom),"#92a27e");
+      line(x+pad,y+header,x+w-pad,y+header,"#e0e7d5");
+      const bodyTop=y+header+13,bodyBottom=y+h-59,row=Math.min(51,(bodyBottom-bodyTop)/9),bubbleH=Math.min(37,row-6);
+      ctx.save();ctx.beginPath();ctx.rect(x+pad,bodyTop,w-pad*2,bodyBottom-bodyTop+1);ctx.clip();
+      const received=events.filter(e=>t>=e.arrive);
+      const occupied=received.length;
+      received.forEach((e,k)=>{
+        const settle=enter(t,e.arrive,.42),last=received[received.length-1],push=last&&k<occupied-1?enter(t,last.arrive,.42):1;
+        const remaining=occupied-1-k;
+        const yy=bodyBottom-bubbleH-remaining*row+(k<occupied-1?(1-push)*row:0);
+        const bw=lerp(w*.62,w*.74,zoom),bx=x+w-pad-bw;
+        group(settle,(1-settle)*18,(1-settle)*12,()=>{
+          rr(bx,yy,bw,bubbleH,lerp(7,10,zoom),"#e6eedc");
+          const is=Math.min(22,bubbleH-13);
+          icon(purposes[e.index][0],bx+10,yy+(bubbleH-is)/2,is,"#7c9b61");
+          rr(bx+is+22,yy+bubbleH*.34,bw*.47,3.5,2,"#b4c79f");
+          rr(bx+is+22,yy+bubbleH*.62,bw*.29,3.5,2,"#c8d6b8");
+        });
+      });
+      ctx.restore();
+      rr(x+pad,y+h-38,w-pad*2,24,6,"#edf2e6");
+      text("给自己发消息…",x+pad+10,y+h-33,lerp(9,10,zoom),"#98a98a");
+      // The short illuminated line is the only shared entrance.
+      const hit=events.reduce((v,e)=>Math.max(v,1-clamp(Math.abs(t-e.arrive)/.36)),0);
+      group(hit*.9,0,0,()=>{
+        line(x-1,y+h-39,x-1,y+h-13,"#8ab065",3);
+        circle(x-1,y+h-26,8,null,"#a8c88b",1);
+      });
+    });
   }
   function scenePurposes(t){
     background(false,t);head(4,"核心理念");
-    reveal(t,.1,()=>{text("多种用途，一个聊天入口。",W/2,portrait?195:157,portrait?49:60,C.ink,600,"center")});
-    const bw=portrait?238:310,bh=portrait?145:114,gap=portrait?18:22;
-    const total=bw*3+gap*2,x0=(W-total)/2,y0=portrait?375:278;
-    const gather=smooth((t-10)/3.2),cx=W/2,cy=portrait?650:470;
+    const order=[2,5,8,1,4,7,0,3,6];
+    const events=order.map((index,n)=>({index,start:4.75+n*.4,arrive:4.75+n*.4+2.05}));
+    const zoom=smooth((t-11.15)/2.6),sourceFade=1-smooth((t-10.25)/.7);
+    const initialTitle=enter(t,.1,.85)*(1-smooth((t-10.1)/.4));
+    group(initialTitle,0,(1-enter(t,.1,.85))*25,()=>text("多种用途，一个聊天入口。",800,157,60,C.ink,600,"center"));
+    const x=lerp(1168,830,zoom),y=lerp(290,112,zoom),w=lerp(310,580,zoom),h=lerp(460,720,zoom);
+    const source={x:136,y:286,w:280,h:108,gap:22};
+    const port={x:1168,y:724};
+    const positions=purposes.map((_,i)=>({x:source.x+(i%3)*(source.w+source.gap),y:source.y+Math.floor(i/3)*(source.h+source.gap)}));
+
+    // Subtle curves appear after the complete grid has been read.
+    if(t>4.1&&sourceFade>0){
+      events.forEach(e=>{
+        const s=positions[e.index],a={x:s.x+source.w/2,y:s.y+source.h/2};
+        const points=[a,{x:a.x+205,y:a.y},{x:1090,y:a.y},{x:port.x,y:port.y}];
+        fusionPath(points,1,"#b7cba4",sourceFade*.22*enter(t,4.1,.6));
+      });
+    }
     purposes.forEach(([name,label],i)=>{
-      const x=x0+(i%3)*(bw+gap),y=y0+Math.floor(i/3)*(bh+gap),p=enter(t,.5+i*.16,.8);
-      const xx=lerp(x,cx-bw/2,gather),yy=lerp(y,cy-bh/2,gather);
-      group(p*(1-gather*.93),0,(1-p)*25,()=>{
-        shadow(()=>rr(xx,yy,bw,bh,17,C.white,"#d7e2c8"),"#41632d0b",16,5);
-        icon(name,xx+bw/2-17,yy+(portrait?30:22),34,"#6b8e52");text(label,xx+bw/2,yy+(portrait?89:73),portrait?25:23,"#4b653d",400,"center");
-      },1-gather*.65,xx+bw/2,yy+bh/2);
+      const e=events.find(v=>v.index===i),p=positions[i],ready=enter(t,.4+i*.1,.7);
+      const peel=smooth((t-e.start)/.42),gone=smooth((t-e.start)/.2),a=ready*sourceFade;
+      group(a,0,(1-ready)*20,()=>{
+        // The unlabelled outline remains briefly, making each departure legible.
+        rr(p.x,p.y,source.w,source.h,15,lerp(1,0,gone)>.01?"#f8fbf2":"#f0f4e8","#d5e1c8");
+        group(1-gone,0,0,()=>{
+          icon(name,p.x+source.w/2-16,p.y+21,32,"#729454");
+          text(label,p.x+source.w/2,p.y+71,23,"#4b653d",400,"center");
+        });
+        group((1-Math.abs(peel*2-1))*.7,0,0,()=>rr(p.x,p.y,source.w,source.h,15,null,"#9bbf78",2));
+      });
     });
-    const ip=smooth((gather-.2)/.6);
-    group(ip,0,(1-ip)*30,()=>{rr(cx-68,cy-68,136,136,37,C.green);icon("chat",cx-39,cy-39,78,C.white);text("给自己发消息",cx,cy+103,portrait?36:32,C.green,500,"center")},.8+ip*.2,cx,cy);
-    reveal(t,2.5,()=>subtitle(["不需要提前分类，直接发送。"]));
+    // Right column leaves first, so later rows cross vacated cells rather than
+    // covering labels that are still being read. At most two pieces share a lane.
+    events.forEach(e=>{
+      const flight=clamp((t-e.start-.2)/1.85);
+      if(t<e.start+.2||t>e.arrive+.12)return;
+      const s=positions[e.index],a={x:s.x+source.w/2,y:s.y+source.h/2};
+      const points=[a,{x:a.x+205,y:a.y},{x:1090,y:a.y},{x:port.x,y:port.y}];
+      const p=fusionBezier(...points,smooth(flight));
+      const into=1-smooth((flight-.83)/.17),appearance=enter(t,e.start+.2,.22),width=lerp(202,105,smooth((flight-.65)/.35)),height=lerp(51,28,flight);
+      group(appearance*into,0,0,()=>{
+        fusionPath(points,smooth(flight),"#a2bd89",.45);
+        shadow(()=>rr(p.x-width/2,p.y-height/2,width,height,9,C.white,"#b8cea1"),"#62804312",12,6);
+        icon(purposes[e.index][0],p.x-width/2+13,p.y-11,22,"#719650");
+        rr(p.x-width/2+47,p.y-4,width*.45,3.5,2,"#b0c49b");
+        rr(p.x-width/2+47,p.y+5,width*.28,3.5,2,"#cedbbf");
+      },1,p.x,p.y,(flight<.8?Math.sin(flight*Math.PI)*.035:0)*(s.y<500?1:-1));
+    });
+    fusionThread(x,y,w,h,t,events,zoom);
+    group(enter(t,1.5,.8)*(1-smooth((t-10.3)/.6)),0,0,()=>text("同一条时间线",1323,778,17,"#8aa273",400,"center"));
+    group(enter(t,2.1,.7)*(1-smooth((t-10.3)/.6)),0,0,()=>subtitle(["不需要提前分类，直接发送。"]));
+    const finalTitle=enter(t,11.1,.95);
+    group(finalTitle,0,(1-finalTitle)*25,()=>{
+      lines(["多种用途，","一个聊天入口。"],110,258,58,C.ink,600,1.4);
+      lines(["所有信息先作为普通消息，","进入同一条时间线。"],114,475,25,C.muted,400,1.95);
+      line(115,625,173,625,"#91ac74",2);
+      text("不需要提前判断它属于哪个分类。",115,661,19,"#8a9c77");
+    });
   }
+
   const messageDelays=[1,3,5,7,9,11,13,15,17];
   function fullChat(x,y,w,t){
     const s=portrait?1.18:1,h=720*s;
@@ -317,28 +605,62 @@
     });
     phaseVeil(t,11);
   }
-  function sceneDevices(t){
-    background(false,t);head(9,"计划中的使用形态");
-    reveal(t,.1,()=>lines(["六平台客户端","与多设备同时登录"],portrait?65:110,portrait?190:170,portrait?56:60,C.ink,600,1.35));
-    const names=["Windows","macOS","Linux","Android","iOS","Web"];
-    const dx=portrait?250:355,dy=portrait?460:380,dw=portrait?400:470,dh=portrait?230:235;
-    reveal(t,.85,()=>drawDevice(dx,dy,dw,dh,"","laptop",true));
-    const bw=portrait?220:220,bh=portrait?63:60,gap=portrait?21:20,x0=portrait?100:215,y0=portrait?770:650;
-    names.forEach((name,i)=>reveal(t,1.4+i*.2,()=>{const x=x0+(i%3)*(bw+gap),y=y0+Math.floor(i/3)*(bh+14);rr(x,y,bw,bh,9,"#f8faf2","#d1dec2");text(name,x+bw/2,y+19,portrait?23:20,"#5b7847",400,"center")},22));
-    reveal(t,3.7,()=>{
-      const x=portrait?100:1080,y=portrait?990:348,w=portrait?700:365,h=portrait?165:330;
-      rr(x,y,w,h,20,C.green);
-      icon("server",x+30,y+30,portrait?46:54,C.lime);
-      text("自托管部署",x+(portrait?105:30),y+(portrait?32:118),portrait?32:33,"#e4edcf",500);
-      text("初期计划支持",x+(portrait?107:32),y+(portrait?85:177),portrait?20:17,"#aac494");
-      text("公网服务器 · VPS · NAS",x+(portrait?107:32),y+(portrait?118:230),portrait?22:21,"#c3d8ad");
+  function sceneDevices(t) {
+    background(false, t);
+    head(9, "计划中的使用形态");
+    reveal(t, .1, () => lines([
+      "六平台客户端",
+      "与多设备同时登录。"
+    ], 110, 165, 54, C.ink, 600, 1.36));
+
+    const clients = [
+      { cx: 175, name: "Windows", type: "desktop" },
+      { cx: 425, name: "macOS", type: "laptop" },
+      { cx: 675, name: "Linux", type: "desktop" },
+      { cx: 925, name: "Android", type: "phone" },
+      { cx: 1175, name: "iOS", type: "phone" },
+      { cx: 1425, name: "Web", type: "browser" }
+    ];
+    const ports = [650, 710, 770, 830, 890, 950];
+
+    // Ordered fan-out ports preserve the same left-to-right order as the six
+    // clients, so none of these independent cloud paths crosses another one.
+    clients.forEach((client, i) => {
+      deviceIndependentLink([
+        [ports[i], 450],
+        [client.cx, 552],
+        [client.cx, 580]
+      ], t, 4.25 + i * .15, .22);
     });
-    if(!portrait)reveal(t,5.1,()=>{icon("shield",1078,722,24,"#819e66");text("基础安全，从第一阶段开始考虑。",1114,725,17,"#7c9566")});
-    reveal(t,5.7,()=>subtitle(["同一账号体系，多台设备同时在线。"]));
+
+    reveal(t, 1.05, () => {
+      deviceCloudNode(580, 340, 440, 110,
+        "统一服务端", "同一账号体系");
+      text("计划支持", 996, 357, 13, "#93a47f", 400, "right");
+    });
+    clients.forEach((client, i) => reveal(t, 1.8 + i * .38, () => {
+      drawDevice(client.cx - 95, 580, 190, 180,
+        client.name, client.type, false);
+    }, 23));
+
+    reveal(t, 8.0, () => {
+      rr(1130, 320, 360, 128, 17, C.green);
+      icon("server", 1155, 342, 33, "#c8dfa1");
+      text("初期自托管", 1210, 341, 25, "#e5efd7", 500);
+      text("计划", 1466, 338, 12, "#a9c48d", 400, "right");
+      text("公网服务器 · VPS · NAS", 1157, 397, 19, "#c1d5ab");
+    }, 22);
+
+    reveal(t, 5.9, () => subtitle([
+      t < 9.3
+        ? "同一账号体系，多台设备可以同时在线。"
+        : "初期支持自行管理消息、附件及备份。"
+    ]));
   }
+
   const milestones=["基础消息系统与自托管","AI 整理与归纳","六平台客户端与个人信息管理","长期可靠性与安全体系研究","公开测试与官方托管"];
   function sceneRoadmap(t){
-    background(true,t);head(14,"开发阶段规划",true);
+    background(true,t);head(13,"开发阶段规划",true);
     reveal(t,.1,()=>{text("一步一步，",portrait?65:110,portrait?195:205,portrait?68:71,"#e5efda",500);text("做成能长期用的样子。",portrait?65:110,portrait?294:312,portrait?53:46,"#a7c48d",400)});
     if(!portrait)reveal(t,1.1,()=>{text("01",110,455,210,"#355b3c",400,"left","Georgia,serif");text("— 05",120,680,45,"#668b54",400,"left","Georgia,serif")});
     const x=portrait?85:740,y=portrait?470:183,row=portrait?128:107;
@@ -357,7 +679,7 @@
     reveal(t,6.3,()=>subtitle(portrait?["阶段顺序不代表重要性的排序。","基础安全从第一阶段开始建设。"]:["阶段顺序不代表重要性的排序。基础安全从第一阶段开始建设。"],true));
   }
   function sceneEnd(t){
-    background(false,t);head(15,"最后想做成的样子");
+    background(false,t);head(14,"最后想做成的样子");
     const cx=W/2,cy=portrait?235:170,p=enter(t,.15,1);
     group(p,0,(1-p)*25,()=>{rr(cx-34,cy,68,68,20,C.green);icon("chat",cx-21,cy+13,42,C.white)});
     const yy=portrait?440:333,fs=portrait?63:73;
@@ -371,15 +693,32 @@
   }
   function sceneMemory(t){
     background(false,t);head(2,"我和文件传输助手的故事");
-    reveal(t,.1,()=>lines(["零零碎碎的消息，","也留下了生活的记录。"],110,185,59,C.ink,600,1.4));
-    const story=t<8?"看到有意思的创意，或者好看的摄影、绘画、设计作品，我也会顺手发进去，积攒审美，方便以后学习模仿。":t<14?"想看的书、电影和想补的番也会记下来，免得之后忘了。这些消息还能让我在不写日记的情况下，回顾过去的日子。":"到了大四，要记住的事情越来越多，记忆力却反而下降了。也就更加依赖这种外置的记录。";
-    reveal(t,.7,()=>paragraph(story,114,415,610,25,C.muted,1.95));
-    reveal(t,1.1,()=>{line(870,235,870,690,"#c2d4b0",2)});
-    reveal(t,1.4,()=>{circle(870,275,5,"#88a66b");smallCard(920,218,520,105,"film","想补《冰菓》","书影音清单",.02,t)});
-    reveal(t,3.2,()=>{circle(870,435,5,"#88a66b");smallCard(920,380,520,105,"light","今天终于把实验跑通了","随手留下的记录",-.025,t)});
-    reveal(t,5,()=>{circle(870,601,5,"#88a66b");group(1,0,0,()=>{rr(920,545,520,137,15,C.white,"#d8e1cc");text("serendipity",947,570,40,C.green,400,"left","Georgia,serif");text("偶然发现美好事物的机缘",949,628,22,"#81966d")},1,1180,600,.02)});
-    reveal(t,7,()=>subtitle(["想到什么直接发条消息，总比打开笔记软件、新建文档、考虑怎么分类方便得多。"]));
+    const beat=t<7?0:t<14?1:2,q=t-beat*7;
+    const titles=[["积攒喜欢的","作品和创意。"],["想看的书、电影，","和想补的番。"],["零零碎碎的消息，","也留下生活的记录。"]];
+    const scripts=[
+      ["看到好看的摄影、绘画、设计作品，","也会顺手发进去，积攒审美，方便以后学习模仿。"],
+      ["想看的书、电影和想补的番也会记下来，","免得之后忘了。"],
+      ["不用专门写日记，也能回顾过去的日子。","到了大四，要记住的事情越来越多，","也就更加依赖这种外置的记录。"]
+    ];
+    reveal(q,.1,()=>lines(titles[beat],110,205,59,C.ink,600,1.4));
+    reveal(q,.5,()=>lines(scripts[beat],114,459,25,C.muted,400,1.95));
+    if(beat===0){
+      reveal(q,.25,()=>{shadow(()=>rr(945,210,480,502,18,C.white,"#d4dfc7"));photoCrop(965,230,440,401,10);text("黑白建筑摄影",975,655,23,C.green,500);text("原案中的审美素材示例",975,691,15,"#90a27d")});
+    }else if(beat===1){
+      reveal(q,.2,()=>storyPanel("书影音清单",q));
+      storyBubble("想看《布达佩斯大饭店》",918,350,497,"电影 · 想看",q,.7);
+      storyBubble("想补《冰菓》",1060,493,355,"想补的番",q,2.2);
+    }else{
+      reveal(q,.2,()=>storyPanel("翻一翻自己的消息",q));
+      reveal(q,.6,()=>{line(908,337,908,641,"#c5d7b1",2)});
+      reveal(q,.9,()=>{circle(908,369,5,"#87a36b");text("今天终于把实验跑通了",941,348,28,C.green,500);text("学习与工作",942,389,17,"#91a67d")});
+      reveal(q,2.1,()=>{circle(908,481,5,"#87a36b");text("明早给老师发邮件",941,460,28,C.green,500);text("需要记住的事情",942,501,17,"#91a67d")});
+      reveal(q,3.4,()=>{circle(908,594,5,"#87a36b");text("想看《布达佩斯大饭店》",941,573,26,C.green,500);text("随手留下的生活记录",942,615,17,"#91a67d")});
+    }
+    reveal(q,1.6,()=>subtitle([[ "喜欢的作品先留下来，方便以后再看。","想看的东西，免得之后忘了。","想到什么直接发条消息，总比打开笔记软件、新建文档、考虑怎么分类方便得多。" ][beat]]));
+    phaseVeil(t,7);phaseVeil(t,14);
   }
+
   function capabilityGrid(items,t,y=330,dark=false){
     const bw=430,bh=126,gap=24,x0=131;
     items.forEach((label,i)=>{
@@ -405,49 +744,60 @@
     phaseVeil(t,10);
   }
   function sceneBasicSecurity(t){
-    background(false,t);head(10,"身份验证、安全与隐私 / 初期");
-    reveal(t,.1,()=>text("基础安全，从第一版开始。",110,162,60,C.ink,600));
-    reveal(t,.7,()=>text("安全措施分阶段完善，但基础安全不会推迟到后续版本。",114,263,25,C.muted));
-    capabilityGrid(["安全身份认证","HTTPS 传输加密","数据访问控制","设备与会话管理","备份与恢复","基本限流与防护"],t,338);
-    reveal(t,6.2,()=>lines(["第一版应具备与实际使用范围相匹配的基本安全措施。","早期自托管版本，不等于经过全面安全审计的成熟产品。"],800,728,24,"#6a8257",400,1.85,"center"));
-  }
-  function privacyNode(x,title,body,type,t,delay){
-    reveal(t,delay,()=>{rr(x,365,415,244,18,"#f9fbf3","#d3dfc4");icon(type,x+26,395,36,"#789a5a");text(title,x+26,458,29,C.green,500);lines(body,x+26,516,22,"#839a6b",400,1.8)},28);
-  }
-  function scenePrivacy(t){
-    background(false,t);head(11,"AI 与隐私保护");
-    if(t<12){
-      reveal(t,.1,()=>text("区分数据存储与模型处理。",110,157,57,C.ink,600));
-      reveal(t,.6,()=>text("AI 整理需要读取消息、文档和图片。",114,254,26,C.muted));
-      privacyNode(110,"数据存储",["原始消息、文档与图片","长期保存"],"folder",t,.9);
-      privacyNode(593,"知情与范围控制",["用户应知道发送了哪些数据","并能控制处理范围"],"list",t,2);
-      privacyNode(1075,"模型处理",["初期：可配置模型 API","未来：也可支持自托管模型"],"spark",t,3.1);
-      dotLine([[525,488],[580,488]],enter(t,2.4,1),"#9ab67e",2);
-      dotLine([[1008,488],[1063,488]],enter(t,3.6,1),"#9ab67e",2);
-      reveal(t,4.6,()=>lines(["用户内容是否会送往第三方服务，需要明确说明。","数据保存在哪里，与交给哪个模型处理，应当区分。"],800,714,25,"#748d61",400,1.9,"center"));
+    background(true,t);head(10,"身份验证与网络安全 / 初期基本保障",true);
+    if(t<15){
+      reveal(t,.1,()=>lines(["身份验证","与设备会话管理"],110,182,61,"#e5efd8",600,1.36));
+      secureFocusList(["安全身份认证","设备与会话管理"],t<7?0:1,413);
+      reveal(t,1.2,()=>lines(["后续研究","多因素身份验证 · 多设备信任机制"],114,661,20,"#91b379",400,1.9));
+      reveal(t,.5,()=>secureIdentity(1000,259,370,145));
+      if(t>=7){
+        const q=t-7;
+        const nodes=[{x:815,label:"设备 01"},{x:1073,label:"设备 02"},{x:1331,label:"设备 03"}];
+        nodes.forEach((node,i)=>{
+          const pth=[[1185,404],[1185,470],[node.x+83,470],[node.x+83,528]];
+          dotLine(pth,enter(q,.3+i*.2,1),"#739e5b",1.7);
+          reveal(q,.9+i*.25,()=>{rr(node.x,528,166,131,14,"#294b33","#668a52");rr(node.x+22,548,122,65,7,null,"#9cbc7d",1.5);text(node.label,node.x+83,630,17,"#b8d29c",400,"center")});
+        });
+        reveal(q,.4,()=>text("会话",1212,433,19,"#91b379"));
+      }else{
+        reveal(t,1.7,()=>{rr(1030,469,310,134,15,"#264931","#527b45");icon("shield",1060,510,39,"#91b873");text("安全身份认证",1121,518,25,"#c6dda9",500)});
+      }
+      subtitle(["长期保存个人信息，账号安全从最初的设计开始考虑。"],true);
     }else{
-      const q=t-12;
-      reveal(q,.1,()=>text("安全模型还需要专门研究。",110,163,57,C.ink,600));
-      const names=["端到端加密","服务端搜索","AI 整理","账号恢复"];
-      names.forEach((label,i)=>reveal(q,.6+i*.2,()=>{const x=111+i*352;rr(x,294,322,72,12,"#e6edda","#c6d8b0");text(label,x+161,316,25,"#577943",400,"center")}));
-      reveal(q,1.6,()=>text("这些能力之间的关系，需要进一步研究。",800,414,26,C.muted,400,"center"));
-      reveal(q,2.6,()=>{rr(110,510,1380,141,18,C.green);lines(["现阶段不提前承诺","端到端加密或零知识存储。"],800,535,32,"#e3edd3",500,1.6,"center")});
-      reveal(q,4.1,()=>lines(["HTTPS 是传输加密，","不能等同于服务器无法读取用户内容。"],800,724,27,"#6e875b",400,1.75,"center"));
+      const q=t-15,active=q<5?0:q<10?1:2;
+      reveal(q,.1,()=>lines(["传输加密","与访问防护"],110,182,64,"#e5efd8",600,1.36));
+      secureFocusList(["HTTPS 传输加密","数据访问控制","基本限流与防护"],active,410);
+      reveal(q,.7,()=>text("后续研究：安全测试及漏洞审查",114,686,20,"#91b379"));
+      reveal(q,.3,()=>{rr(810,389,180,145,15,"#2b4f37","#64854f");icon("chat",878,414,43,"#bad49b");text("客户端",900,481,25,"#d7e8c4",500,"center")});
+      reveal(q,.3,()=>{rr(1170,280,325,365,20,"#294a33","#64854f");icon("server",1196,307,35,"#adce8d");text("服务端",1249,312,28,"#d7e8c4",500)});
+      const path=[[990,461],[1170,461]];dotLine(path,enter(q,.6,1),active===0?"#c7df9d":"#688f52",active===0?3:1.5);
+      if(q>1.4)packet(path,q*.24,"#b6d48b");
+      reveal(q,.7,()=>{text("HTTPS",1080,403,23,active===0?"#d5e7b6":"#87ac6d",500,"center");text("传输加密",1080,494,17,"#8eb475",400,"center")});
+      const modules=[{y:382,label:"访问控制",focus:active===1},{y:508,label:"限流与防护",focus:active===2}];
+      modules.forEach(m=>{rr(1195,m.y,275,88,12,m.focus?"#50713e":"#35563a",m.focus?"#b4d18b":"#5c7d48",m.focus?2:1);text(m.label,1332,m.y+27,25,m.focus?"#ebf3d8":"#9fbe87",m.focus?500:400,"center")});
+      subtitle(["基础安全从第一阶段建设，具体方案需要专门研究与验证。"],true);
     }
-    phaseVeil(t,12);
+    phaseVeil(t,15,true);
   }
-  function sceneSecurityResearch(t){
-    background(true,t);head(12,"身份验证、安全与隐私 / 后续研究",true);
-    reveal(t,.1,()=>text("更深入的安全体系，需要专门研究。",110,162,51,"#e4edda",600));
-    reveal(t,.7,()=>text("具体安全模型尚未确定。",114,258,27,"#a4c18c"));
-    capabilityGrid(["多因素身份验证","多设备信任机制","数据加密与密钥管理","账号与数据恢复","安全测试及漏洞审查","多用户隔离与滥用防护"],t,338,true);
-    reveal(t,6.2,()=>lines(["在公开测试或官方托管前，","需要完成相应的安全验证，再扩大使用范围。"],800,728,26,"#b4cda0",400,1.8,"center"));
+
+
+
+  function scenePrivacy(t){
+    background(false,t);head(11,"AI 与隐私 / 补充说明");
+    reveal(t,.1,()=>text("知道哪些数据被处理，并能控制范围。",110,166,51,C.ink,600));
+    const parts=[{x:110,title:"原始记录",small:"消息 · 文档 · 图片",name:"folder"},{x:593,title:"处理范围",small:"由用户控制",name:"list"},{x:1075,title:"模型服务",small:"可配置 API / 自托管模型",name:"spark"}];
+    parts.forEach((p,i)=>reveal(t,.6+i*.4,()=>{rr(p.x,363,415,240,18,i===1?C.green:C.white,i===1?"#537c41":"#d1dec2");icon(p.name,p.x+28,394,38,i===1?C.lime:"#7d9b62");text(p.title,p.x+28,467,31,i===1?"#e4efd5":C.green,500);text(p.small,p.x+28,534,21,i===1?"#accb8f":"#8a9e77")}));
+    dotLine([[525,480],[581,480]],enter(t,1.2,.8),"#9ab47c",2);dotLine([[1008,480],[1063,480]],enter(t,1.8,.8),"#9ab47c",2);
+    reveal(t,1.7,()=>lines(["用户应当知道哪些数据会送往外部模型服务。","并能控制 AI 的处理范围。"],800,715,25,C.muted,400,1.9,"center"));
   }
+
+
+
   function archBox(x,y,w,h,title,detail,type,dark=false){
     rr(x,y,w,h,14,dark?C.green:C.white,dark?"#547943":"#d1dfc1");icon(type,x+25,y+22,34,dark?C.lime:"#739b55");text(title,x+82,y+20,25,dark?"#e3edd4":C.green,500);text(detail,x+82,y+57,17,dark?"#a2c18a":"#899f74");
   }
   function sceneArchitecture(t){
-    background(false,t);head(13,"初步技术设想 / 尚未最终确定");
+    background(false,t);head(12,"初步技术设想 / 尚未最终确定");
     if(t<12){
       reveal(t,.1,()=>text("先可靠保存，再由 AI 独立处理。",110,158,54,C.ink,600));
       reveal(t,.7,()=>archBox(450,285,700,91,"跨平台客户端","聊天界面 · 文件操作 · 本地缓存 · AI 整理视图","chat"));
@@ -467,22 +817,21 @@
     phaseVeil(t,12);
   }
   const scenes=[
-    {start:0,end:10,label:"开篇",description:"一个只和自己聊天的 App。这是在描述一个尚未命名的项目设想。",draw:sceneTitle},
-    {start:10,end:35,label:"我和文件传输助手",description:"我经常使用微信的文件传输助手，或者直接给自己的 QQ 账号发消息。灵感、记录、文案和稿件都会顺手发进去。",draw:sceneOrigin},
-    {start:35,end:55,label:"零碎的生活记录",description:"积攒喜欢的摄影、绘画与设计，记下想看的书和电影；零碎消息也留下了生活记录。到了大四，越来越依赖这种外置的记录。",draw:sceneMemory},
-    {start:55,end:73,label:"想自己做一个",description:"多台电脑切换登录不方便。希望跨设备传文件，并从云端找回完整历史，再由 AI 帮忙整理。",draw:sceneNeed},
-    {start:73,end:87,label:"核心理念",description:"九种用途，同一个聊天入口。不需要提前分类，直接发送。",draw:scenePurposes},
-    {start:87,end:115,label:"给自己发消息",description:"原案中的八条文字与文件消息，以及建筑摄影，逐条进入同一条时间线。",draw:sceneChat},
-    {start:115,end:136,label:"保存与整理",description:"云端长期存储原始消息与附件。AI 整理结果单独保存，可以修改、纠正或重新生成，不影响原始消息。",draw:sceneProcess},
-    {start:136,end:161,label:"整理后的信息",description:"电影和待办从原始消息提取。形成书单影单番单、待办提醒、审美素材、学习笔记、生活回顾与智能检索。",draw:sceneOrganize},
-    {start:161,end:181,label:"常用操作",description:"消息与文件传输、截图粘贴、拖放、预览、编辑、搜索，以及增量同步、离线缓存、备份恢复与完整导出。",draw:sceneFeatures},
-    {start:181,end:200,label:"跨平台与自托管",description:"计划支持六平台客户端和多设备同时登录，初期计划支持在自己的公网服务器、VPS 或 NAS 自托管。",draw:sceneDevices},
-    {start:200,end:222,label:"基本安全保障",description:"基础安全从第一版考虑，包括身份认证、HTTPS、访问控制、设备会话、备份恢复、基本限流防护。早期版本不等于经过全面安全审计。",draw:sceneBasicSecurity},
-    {start:222,end:248,label:"AI 与隐私",description:"区分数据存储与模型处理。用户应知道哪些内容送往外部模型服务，并能控制范围。端到端加密和零知识存储尚不承诺，HTTPS不代表服务器无法读取内容。",draw:scenePrivacy},
-    {start:248,end:268,label:"安全体系研究",description:"后续专门研究多因素认证、设备信任、加密密钥、账号恢复、安全测试与隔离防护。具体安全模型尚未确定，公开测试或托管前完成相应验证。",draw:sceneSecurityResearch},
-    {start:268,end:292,label:"初步技术设想",description:"候选技术方案尚未确定。先可靠保存消息与附件，AI 作为独立任务。服务端持久化确认、附件完整性与备份恢复均需考虑。",draw:sceneArchitecture},
-    {start:292,end:312,label:"开发规划",description:"五阶段逐步建立基础消息、自托管、AI整理、六平台客户端、可靠性安全，再考虑公开测试与托管。",draw:sceneRoadmap},
-    {start:312,end:325,label:"最后想做成的样子",description:"一个真正能长期用下去的文件传输助手。目前仍处于项目构想阶段，相关功能尚待开发。",draw:sceneEnd}
+    {start:0,end:9,label:"开篇",description:"这是对一个项目设想的描述，不是项目名称。",draw:sceneTitle},
+    {start:9,end:36,label:"我和文件传输助手",description:"从传文件，到备忘、记录、稿件和单词，每段文案对应当时的画面。",draw:sceneOrigin},
+    {start:36,end:57,label:"零碎的生活记录",description:"摄影只配摄影；电影和番剧只配相应消息；生活记录对应消息时间线。",draw:sceneMemory},
+    {start:57,end:75,label:"想自己做一个",description:"macOS、Windows 和 Linux 分别连接云端，找回完整历史记录。",draw:sceneNeed},
+    {start:75,end:93,label:"核心理念",description:"九种用途沿各自路径成为消息，共同进入唯一聊天入口，保留在同一条时间线。",draw:scenePurposes},
+    {start:93,end:121,label:"给自己发消息",description:"原案中的八条文字和文件消息，以及建筑摄影。",draw:sceneChat},
+    {start:121,end:140,label:"保存与整理",description:"云端保存原始记录，AI 整理结果可以修改，不影响原始消息。",draw:sceneProcess},
+    {start:140,end:163,label:"整理后的信息",description:"电影与待办提取，再形成六种信息视图。",draw:sceneOrganize},
+    {start:163,end:183,label:"常用操作",description:"消息与文件传输、编辑、预览、搜索，以及离线缓存、备份恢复和完整导出。",draw:sceneFeatures},
+    {start:183,end:201,label:"六平台与自托管",description:"六个平台各自使用客户端或浏览器，连接同一服务端；初期计划支持自托管。",draw:sceneDevices},
+    {start:201,end:231,label:"身份验证与网络安全",description:"安全身份认证、设备与会话管理、HTTPS 传输加密、数据访问控制、基本限流与防护。",draw:sceneBasicSecurity},
+    {start:231,end:239,label:"AI 与隐私",description:"用户应知道哪些数据会送往外部模型服务，并控制 AI 处理范围。",draw:scenePrivacy},
+    {start:239,end:263,label:"初步技术设想",description:"候选技术方案尚未确定，先可靠保存，再由独立任务进行 AI 处理。",draw:sceneArchitecture},
+    {start:263,end:283,label:"开发规划",description:"五个开发阶段，基础安全从第一阶段开始。",draw:sceneRoadmap},
+    {start:283,end:296,label:"最后想做成的样子",description:"一个真正能长期用下去的文件传输助手。相关功能尚待开发。",draw:sceneEnd}
   ];
   function resize(){
     const rect=screen.getBoundingClientRect();
@@ -494,7 +843,7 @@
     return {width:W,height:H,portrait};
   }
   function render(time){
-    lastTime=clamp(time,0,325);resize();
+    lastTime=clamp(time,0,296);resize();
     const index=scenes.findIndex(s=>lastTime>=s.start&&lastTime<s.end),i=index<0?scenes.length-1:index,scene=scenes[i];
     ctx.save();ctx.globalAlpha=1;scene.draw(lastTime-scene.start);ctx.restore();
     // Fade through paper; text from two different scenes never shares a frame.
@@ -504,7 +853,7 @@
     canvas.dataset.scene=String(i);canvas.dataset.time=lastTime.toFixed(2);
     return scene;
   }
-  window.InboxConceptFilm={duration:325,render,resize,scenes:scenes.map(({draw,...rest})=>rest)};
+  window.InboxConceptFilm={duration:296,render,resize,scenes:scenes.map(({draw,...rest})=>rest)};
   photo.addEventListener("load",()=>render(lastTime));
   if("ResizeObserver" in window)new ResizeObserver(()=>render(lastTime)).observe(screen);
   window.addEventListener("resize",()=>render(lastTime),{passive:true});

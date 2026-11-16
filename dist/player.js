@@ -21,12 +21,12 @@
   const notice = $("screen-notice");
   const chapterButtons = [...document.querySelectorAll("[data-seek]")];
   const initialFilm = window.InboxConceptFilm;
-  const duration = Number.isFinite(initialFilm?.duration) ? initialFilm.duration : 325;
+  const duration = Number.isFinite(initialFilm?.duration) ? initialFilm.duration : 296;
   const sound = typeof window.InboxFilmSound === "function"
     ? new window.InboxFilmSound({ duration }) : null;
   let currentTime = 0;
   let state = "poster";
-  let muted = true;
+  let muted = false;
   let frame = 0;
   let resizeFrame = 0;
   let anchorTime = 0;
@@ -39,7 +39,7 @@
   let resumeAfterScrub = false;
   let disposed = false;
   let renderErrorShown = false;
-  sound?.setMuted(true);
+  sound?.setMuted(muted);
 
   const clamp = (value) => Math.max(0, Math.min(duration, Number.isFinite(Number(value)) ? Number(value) : 0));
   const format = (value) => {
@@ -208,7 +208,14 @@
 
   function togglePlayback() {
     if (playing()) pausePlayback();
-    else beginPlayback();
+    else gesturePlay();
+  }
+
+  function gesturePlay() {
+    // Invoke resume synchronously inside the initiating click/key/pointer event.
+    // Playback does not wait for audio permission and remains usable if it fails.
+    if (!muted) unlockForCurrentPreference();
+    beginPlayback();
   }
 
   function seekTo(time, resume = playing()) {
@@ -224,32 +231,33 @@
     state = "paused";
     draw();
     updateUI(true);
-    if (resume) beginPlayback();
+    if (resume) gesturePlay();
   }
 
-  async function enableSound() {
+  async function unlockForCurrentPreference() {
     const request = ++soundRequest;
     if (!sound?.supported) {
-      muted = true;
-      updateUI(true);
       showNotice("此浏览器暂不支持音效，继续静音观看");
       return false;
     }
     // This call is made synchronously from a click/keyboard gesture, before await.
     const ready = await sound.unlock();
-    if (request !== soundRequest || disposed) return false;
+    if (request !== soundRequest || disposed || muted) return false;
     if (!ready) {
-      muted = true;
-      sound.setMuted(true);
-      updateUI(true);
       showNotice("未能开启音效，继续静音观看");
       return false;
     }
-    muted = false;
     sound.setMuted(false);
     if (playing()) sound.play(currentTime);
     updateUI(true);
     return true;
+  }
+
+  function enableSound() {
+    muted = false;
+    sound?.setMuted(false);
+    updateUI(true);
+    return unlockForCurrentPreference();
   }
 
   function muteSound() {
@@ -308,10 +316,12 @@
   }
 
   $("start-sound")?.addEventListener("click", () => {
-    enableSound();
-    beginPlayback();
+    muted = false;
+    sound?.setMuted(false);
+    updateUI(true);
+    gesturePlay();
   });
-  $("start-silent")?.addEventListener("click", () => { muteSound(); beginPlayback(); });
+  $("start-silent")?.addEventListener("click", () => { muteSound(); gesturePlay(); });
   $("end-replay")?.addEventListener("click", () => seekTo(0, true));
   $("restart")?.addEventListener("click", () => { seekTo(0, true); showNotice("从头播放"); });
   playButton?.addEventListener("click", togglePlayback);
