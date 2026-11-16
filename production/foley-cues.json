@@ -1,0 +1,584 @@
+{
+  "duration": 109,
+  "voiceover": false,
+  "tempo_bpm": 88,
+  "style": "Warm, clean, tactile concept film; neither trailer nor game UI. Original instrumental score and restrained Foley.",
+  "gain_convention": "Foley gain is a linear relative level applied after individual source normalization; keep score above texture but below close contacts. Adjust final mix by LUFS/true peak, not by these numbers alone.",
+  "mix": {
+    "target_integrated_lufs": -18,
+    "true_peak_dbfs": -1.5,
+    "target_short_term_max_lufs": -14,
+    "event_peak_limit_dbfs": -12,
+    "music_fade_in": [
+      0.2,
+      1.2
+    ],
+    "end_fade": [
+      107.8,
+      108.9
+    ],
+    "reverb": "Small warm room for instrument, close/dry Foley; 0.45–0.8 s tail, never long shimmering wash",
+    "stereo": "Music remains center-stable with moderate width. Use actual visual left/right for Foley; never hard-pan important impact.",
+    "main_rule": "Do not trigger an automatic sound on every scene boundary. Score bridges most cuts."
+  },
+  "sections": [
+    {
+      "start": 0,
+      "end": 3,
+      "name": "opening",
+      "energy": 0.3,
+      "description": "Sparse upper felt/piano motif, no pulse; leave first .2 seconds open"
+    },
+    {
+      "start": 3,
+      "end": 14,
+      "name": "personal_habit",
+      "energy": 0.42,
+      "description": "Warm organic plucks and two-note piano answer, felt/wood timbre; breath between story beats"
+    },
+    {
+      "start": 14,
+      "end": 29,
+      "name": "memory_to_cloud",
+      "energy": 0.48,
+      "description": "Continue same harmonic world, lift upper register lightly; gentle sustained layer begins under cloud"
+    },
+    {
+      "start": 29,
+      "end": 39,
+      "name": "convergence",
+      "energy": 0.72,
+      "description": "Introduce soft 88 BPM pulse and evolving arpeggio; widen stereo with the nine-to-one movement; resolve during zoom"
+    },
+    {
+      "start": 39,
+      "end": 46,
+      "name": "examples",
+      "energy": 0.6,
+      "description": "Thin the melody so close tactile message Foley is audible; maintain forward pulse, no competing high bells"
+    },
+    {
+      "start": 46,
+      "end": 59,
+      "name": "save_then_organize",
+      "energy": 0.55,
+      "description": "Round low pluck, one warm chord movement, half-time feel; explanation remains clear"
+    },
+    {
+      "start": 59,
+      "end": 75,
+      "name": "capabilities_and_devices",
+      "energy": 0.58,
+      "description": "Motif returns in lighter marimba/felt colour, subtle rhythmic ticks on alternate beats; no four-on-the-floor kick"
+    },
+    {
+      "start": 75,
+      "end": 90,
+      "name": "security_and_privacy",
+      "energy": 0.29,
+      "description": "Remove high ostinato and drums; warm steady low-mid harmony, occasional dry texture; grounded, no suspense or threat"
+    },
+    {
+      "start": 90,
+      "end": 104,
+      "name": "architecture_and_plan",
+      "energy": 0.5,
+      "description": "Bring back short motif and light pulse; clear progression, still conversational scale"
+    },
+    {
+      "start": 104,
+      "end": 109,
+      "name": "ending",
+      "energy": 0.28,
+      "description": "Resolve the opening motif with felt/piano and warm tail; stop new notes after 106.2, fade all audio smoothly by 108.9"
+    }
+  ],
+  "score_breaths": [
+    {
+      "start": 13.6,
+      "end": 14.15,
+      "attenuation_db": -3
+    },
+    {
+      "start": 28.75,
+      "end": 29.15,
+      "attenuation_db": -4
+    },
+    {
+      "start": 38.55,
+      "end": 39.15,
+      "attenuation_db": -5
+    },
+    {
+      "start": 74.65,
+      "end": 75.35,
+      "attenuation_db": -5
+    },
+    {
+      "start": 85.7,
+      "end": 86.3,
+      "attenuation_db": -2
+    },
+    {
+      "start": 103.65,
+      "end": 104.15,
+      "attenuation_db": -4
+    }
+  ],
+  "events": [
+    {
+      "time": 0.27,
+      "type": "felt_key",
+      "gain": 0.08,
+      "pan": -0.1,
+      "duration": 0.16,
+      "note": "Opening icon settling; one tactile soft attack, not a logo sting"
+    },
+    {
+      "time": 3.704,
+      "type": "paper_tap",
+      "gain": 0.07,
+      "pan": 0.35,
+      "duration": 0.13,
+      "note": "First file card comes to rest"
+    },
+    {
+      "time": 4.730667,
+      "type": "paper_tap",
+      "gain": 0.065,
+      "pan": 0.25,
+      "duration": 0.14,
+      "note": "ZIP card; no literal clothing zipper"
+    },
+    {
+      "time": 6.546667,
+      "type": "paper_slide",
+      "gain": 0.07,
+      "pan": 0.3,
+      "duration": 0.25,
+      "pan_end": 0.05
+    },
+    {
+      "time": 10.203333,
+      "type": "paper_slide",
+      "gain": 0.055,
+      "pan": 0.25,
+      "duration": 0.25,
+      "pan_end": 0.05
+    },
+    {
+      "time": 14.14,
+      "type": "photo_paper",
+      "gain": 0.07,
+      "pan": 0.35,
+      "duration": 0.19,
+      "note": "The photo is displayed, not taken: no camera shutter"
+    },
+    {
+      "time": 16.88,
+      "type": "paper_slide",
+      "gain": 0.06,
+      "pan": 0.3,
+      "duration": 0.25,
+      "pan_end": 0.05
+    },
+    {
+      "time": 19.88,
+      "type": "paper_slide",
+      "gain": 0.055,
+      "pan": 0.28,
+      "duration": 0.24,
+      "pan_end": 0.05
+    },
+    {
+      "time": 24.05,
+      "type": "soft_bloom",
+      "gain": 0.06,
+      "pan": 0,
+      "duration": 0.75,
+      "note": "Cloud node opening; no heavenly sparkle"
+    },
+    {
+      "time": 26.525,
+      "type": "air_link",
+      "gain": 0.045,
+      "pan": -0.15,
+      "duration": 1.1,
+      "pan_end": 0.15,
+      "note": "One restrained network connection layer, no packet ticks"
+    },
+    {
+      "time": 29.12,
+      "type": "felt_key",
+      "gain": 0.05,
+      "pan": -0.15,
+      "duration": 0.16,
+      "note": "Core grid; the music introduces the pulse here"
+    },
+    {
+      "time": 30.2,
+      "type": "fusion_stream",
+      "gain": 0.07,
+      "pan": -0.48,
+      "duration": 4.53,
+      "pan_end": 0.52,
+      "pulse_starts": [
+        0.0,
+        0.36,
+        0.72,
+        1.08,
+        1.44,
+        1.8,
+        2.16,
+        2.52,
+        2.88
+      ],
+      "pulse_duration": 1.65,
+      "note": "ONE coherent airy movement, shaped by nine overlapping journeys; not nine loud whooshes"
+    },
+    {
+      "time": 31.85,
+      "type": "felt_arrival",
+      "gain": 0.038,
+      "pan": 0.48,
+      "duration": 0.075,
+      "variation": 0,
+      "note": "Very short, damped woody contact; no notification pitch"
+    },
+    {
+      "time": 32.21,
+      "type": "felt_arrival",
+      "gain": 0.04,
+      "pan": 0.48,
+      "duration": 0.075,
+      "variation": 1,
+      "note": "Very short, damped woody contact; no notification pitch"
+    },
+    {
+      "time": 32.57,
+      "type": "felt_arrival",
+      "gain": 0.041999999999999996,
+      "pan": 0.48,
+      "duration": 0.075,
+      "variation": 2,
+      "note": "Very short, damped woody contact; no notification pitch"
+    },
+    {
+      "time": 32.93,
+      "type": "felt_arrival",
+      "gain": 0.044,
+      "pan": 0.48,
+      "duration": 0.075,
+      "variation": 3,
+      "note": "Very short, damped woody contact; no notification pitch"
+    },
+    {
+      "time": 33.29,
+      "type": "felt_arrival",
+      "gain": 0.046,
+      "pan": 0.48,
+      "duration": 0.075,
+      "variation": 4,
+      "note": "Very short, damped woody contact; no notification pitch"
+    },
+    {
+      "time": 33.65,
+      "type": "felt_arrival",
+      "gain": 0.048,
+      "pan": 0.48,
+      "duration": 0.075,
+      "variation": 5,
+      "note": "Very short, damped woody contact; no notification pitch"
+    },
+    {
+      "time": 34.01,
+      "type": "felt_arrival",
+      "gain": 0.05,
+      "pan": 0.48,
+      "duration": 0.075,
+      "variation": 6,
+      "note": "Very short, damped woody contact; no notification pitch"
+    },
+    {
+      "time": 34.37,
+      "type": "felt_arrival",
+      "gain": 0.052,
+      "pan": 0.48,
+      "duration": 0.075,
+      "variation": 7,
+      "note": "Very short, damped woody contact; no notification pitch"
+    },
+    {
+      "time": 34.73,
+      "type": "felt_arrival",
+      "gain": 0.054,
+      "pan": 0.48,
+      "duration": 0.075,
+      "variation": 8,
+      "note": "Very short, damped woody contact; no notification pitch"
+    },
+    {
+      "time": 34.85,
+      "type": "perspective_bloom",
+      "gain": 0.047,
+      "pan": 0.4,
+      "duration": 2.7,
+      "pan_end": 0.1,
+      "note": "Continuous warm widening matched to camera enlargement; no bass-drop"
+    },
+    {
+      "time": 39.34066,
+      "type": "felt_arrival",
+      "gain": 0.047,
+      "pan": 0.46,
+      "duration": 0.085,
+      "variation": 0,
+      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
+    },
+    {
+      "time": 40.021978,
+      "type": "felt_arrival",
+      "gain": 0.044,
+      "pan": 0.46,
+      "duration": 0.085,
+      "variation": 1,
+      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
+    },
+    {
+      "time": 40.703297,
+      "type": "felt_arrival",
+      "gain": 0.04,
+      "pan": 0.46,
+      "duration": 0.085,
+      "variation": 2,
+      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
+    },
+    {
+      "time": 41.384615,
+      "type": "paper_tap",
+      "gain": 0.052,
+      "pan": 0.46,
+      "duration": 0.085,
+      "variation": 3,
+      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
+    },
+    {
+      "time": 42.065934,
+      "type": "photo_paper",
+      "gain": 0.058,
+      "pan": 0.46,
+      "duration": 0.13,
+      "variation": 4,
+      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
+    },
+    {
+      "time": 42.747253,
+      "type": "felt_arrival",
+      "gain": 0.043,
+      "pan": 0.46,
+      "duration": 0.085,
+      "variation": 5,
+      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
+    },
+    {
+      "time": 43.428572,
+      "type": "felt_arrival",
+      "gain": 0.046,
+      "pan": 0.46,
+      "duration": 0.085,
+      "variation": 6,
+      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
+    },
+    {
+      "time": 44.10989,
+      "type": "felt_arrival",
+      "gain": 0.043,
+      "pan": 0.46,
+      "duration": 0.085,
+      "variation": 7,
+      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
+    },
+    {
+      "time": 44.791209,
+      "type": "paper_tap",
+      "gain": 0.055,
+      "pan": 0.46,
+      "duration": 0.085,
+      "variation": 8,
+      "note": "Content reveals IN PLACE; do not attach travel whooshes or typing tails"
+    },
+    {
+      "time": 46.1,
+      "type": "warm_boundary",
+      "gain": 0.065,
+      "pan": 0,
+      "duration": 0.32,
+      "note": "New dark section; restrained low-mid contact, not a trailer impact"
+    },
+    {
+      "time": 48.025,
+      "type": "air_link",
+      "gain": 0.04,
+      "pan": -0.3,
+      "duration": 0.8,
+      "pan_end": 0.25
+    },
+    {
+      "time": 53.785,
+      "type": "felt_arrival",
+      "gain": 0.055,
+      "pan": -0.34,
+      "duration": 0.1,
+      "variation": 2
+    },
+    {
+      "time": 54.065,
+      "type": "felt_arrival",
+      "gain": 0.055,
+      "pan": 0.34,
+      "duration": 0.1,
+      "variation": 4
+    },
+    {
+      "time": 55.92,
+      "type": "paper_glide",
+      "gain": 0.06,
+      "pan": 0,
+      "duration": 0.66,
+      "pan_end": 0.06,
+      "note": "Two extraction cards move together into the grid"
+    },
+    {
+      "time": 57.53,
+      "type": "soft_settle",
+      "gain": 0.045,
+      "pan": 0,
+      "duration": 0.2,
+      "note": "Grid completes; no celebratory chime"
+    },
+    {
+      "time": 63.5,
+      "type": "paper_glide",
+      "gain": 0.045,
+      "pan": 0.05,
+      "duration": 0.28,
+      "note": "Local card-label swap only"
+    },
+    {
+      "time": 71.675,
+      "type": "air_link",
+      "gain": 0.05,
+      "pan": -0.38,
+      "duration": 1.15,
+      "pan_end": 0.4,
+      "note": "Single broad fan-out sound, not six high pings"
+    },
+    {
+      "time": 73.355,
+      "type": "paper_tap",
+      "gain": 0.045,
+      "pan": 0.45,
+      "duration": 0.13,
+      "note": "Self-hosting note settles"
+    },
+    {
+      "time": 76.58125,
+      "type": "felt_low",
+      "gain": 0.045,
+      "pan": 0.3,
+      "duration": 0.12,
+      "note": "Identity module settled; calm and neutral"
+    },
+    {
+      "time": 78.265625,
+      "type": "soft_settle",
+      "gain": 0.038,
+      "pan": 0.3,
+      "duration": 0.14,
+      "note": "Session devices complete, no login-success notification"
+    },
+    {
+      "time": 80.5,
+      "type": "air_link",
+      "gain": 0.035,
+      "pan": 0.1,
+      "duration": 0.8,
+      "pan_end": 0.3,
+      "note": "HTTPS section connection; do not sonify every packet loop"
+    },
+    {
+      "time": 87.12,
+      "type": "soft_settle",
+      "gain": 0.035,
+      "pan": 0,
+      "duration": 0.16,
+      "note": "AI processing boundary; no alarm"
+    },
+    {
+      "time": 91.594984,
+      "type": "felt_low",
+      "gain": 0.045,
+      "pan": 0,
+      "duration": 0.14
+    },
+    {
+      "time": 92.791222,
+      "type": "soft_settle",
+      "gain": 0.04,
+      "pan": 0,
+      "duration": 0.18
+    },
+    {
+      "time": 94.654545,
+      "type": "paper_slide",
+      "gain": 0.045,
+      "pan": 0,
+      "duration": 0.25,
+      "pan_end": 0.08
+    },
+    {
+      "time": 98.566667,
+      "type": "felt_arrival",
+      "gain": 0.039,
+      "pan": 0,
+      "duration": 0.085,
+      "variation": 0,
+      "note": "Only three of five milestones receive faint contact sounds"
+    },
+    {
+      "time": 100.033333,
+      "type": "felt_arrival",
+      "gain": 0.039,
+      "pan": 0,
+      "duration": 0.085,
+      "variation": 2,
+      "note": "Only three of five milestones receive faint contact sounds"
+    },
+    {
+      "time": 101.5,
+      "type": "felt_arrival",
+      "gain": 0.039,
+      "pan": 0,
+      "duration": 0.085,
+      "variation": 4,
+      "note": "Only three of five milestones receive faint contact sounds"
+    },
+    {
+      "time": 104.25,
+      "type": "closing_settle",
+      "gain": 0.05,
+      "pan": 0,
+      "duration": 0.22,
+      "note": "Soft return, not a brand lock-up or triumph"
+    }
+  ],
+  "avoid": [
+    "narration / TTS / vocal texture",
+    "one paper whoosh per scene",
+    "one sine beep per message",
+    "constant sub drone",
+    "alarm-style security sounds",
+    "literal shutter or zipper without matching action",
+    "abrupt endings when paused/seeking"
+  ]
+}

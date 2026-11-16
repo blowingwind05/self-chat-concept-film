@@ -35,7 +35,6 @@
   let lastScene = -1;
   let lastSecond = -1;
   let noticeTimer = 0;
-  let soundRequest = 0;
   let isScrubbing = false;
   let resumeAfterScrub = false;
   let disposed = false;
@@ -44,6 +43,7 @@
   let pointerOnTransport = false;
   let keyboardInput = false;
   sound?.setMuted(muted);
+  if (sound) sound.onError = audioFailed;
 
   const clamp = (value) => Math.max(0, Math.min(duration, Number.isFinite(Number(value)) ? Number(value) : 0));
   const format = (value) => {
@@ -81,7 +81,7 @@
     if (playUse) playUse.setAttribute("href", playing() ? "#pause-icon" : "#play-icon");
     playButton?.setAttribute("aria-label", playing() ? "暂停短片" : state === "ended" ? "重新播放短片" : "播放短片");
     playButton?.setAttribute("aria-pressed", String(playing()));
-    soundButton?.setAttribute("aria-label", muted ? "开启音效" : "关闭音效");
+    soundButton?.setAttribute("aria-label", muted ? "开启声音" : "关闭声音");
     soundButton?.setAttribute("aria-pressed", String(!muted));
     if (soundUse) soundUse.setAttribute("href", muted ? "#mute-icon" : "#sound-icon");
     if (seek) {
@@ -146,7 +146,15 @@
   }
 
   function sampleClock(now = performance.now()) {
-    if (playing()) currentTime = clamp(anchorTime + Math.max(0, now - anchorWall) / 1000);
+    if (!playing()) return;
+    const mediaTime = sound?.getTime?.();
+    if (Number.isFinite(mediaTime)) {
+      currentTime = clamp(mediaTime);
+      anchorTime = currentTime;
+      anchorWall = now;
+    } else {
+      currentTime = clamp(anchorTime + Math.max(0, now - anchorWall) / 1000);
+    }
   }
 
   function cancelFrame() {
@@ -175,7 +183,6 @@
       pausePlayback();
       return;
     }
-    sound?.update(currentTime);
     updateUI();
     frame = window.requestAnimationFrame(tick);
   }
@@ -193,7 +200,8 @@
     anchorTime = currentTime;
     anchorWall = performance.now();
     sound?.setMuted(muted);
-    sound?.play(currentTime);
+    if (sound?.supported) sound.play(currentTime);
+    else audioFailed(currentTime);
     draw();
     updateUI(true);
     frame = window.requestAnimationFrame(tick);
@@ -218,9 +226,7 @@
   }
 
   function gesturePlay() {
-    // Invoke resume synchronously inside the initiating click/key/pointer event.
-    // Playback does not wait for audio permission and remains usable if it fails.
-    if (!muted) unlockForCurrentPreference();
+    // The single soundtrack starts once, synchronously inside this gesture.
     beginPlayback();
   }
 
@@ -240,34 +246,28 @@
     if (resume) gesturePlay();
   }
 
-  async function unlockForCurrentPreference() {
-    const request = ++soundRequest;
-    if (!sound?.supported) {
-      showNotice("此浏览器暂不支持音效，继续静音观看");
-      return false;
-    }
-    // This call is made synchronously from a click/keyboard gesture, before await.
-    const ready = await sound.unlock();
-    if (request !== soundRequest || disposed || muted) return false;
-    if (!ready) {
-      showNotice("未能开启音效，继续静音观看");
-      return false;
-    }
-    sound.setMuted(false);
-    if (playing()) sound.play(currentTime);
+  function audioFailed(time) {
+    if (Number.isFinite(time)) currentTime = clamp(time);
+    anchorTime = currentTime;
+    anchorWall = performance.now();
+    muted = true;
+    sound?.setMuted(true);
+    showNotice("声轨暂时无法播放，继续静音观看");
     updateUI(true);
+  }
+
+  async function enableSound() {
+    if (!sound?.supported) { audioFailed(currentTime); return false; }
+    const recovering = sound.failed;
+    if (recovering && !sound.recover()) return false;
+    muted = false;
+    sound.setMuted(false);
+    updateUI(true);
+    if (recovering && playing()) return sound.play(currentTime);
     return true;
   }
 
-  function enableSound() {
-    muted = false;
-    sound?.setMuted(false);
-    updateUI(true);
-    return unlockForCurrentPreference();
-  }
-
   function muteSound() {
-    soundRequest++;
     muted = true;
     sound?.setMuted(true);
     updateUI(true);
@@ -275,10 +275,10 @@
 
   function toggleSound() {
     if (muted) {
-      enableSound().then((ready) => { if (ready) showNotice("音效已开启"); });
+      enableSound().then((ready) => { if (ready && !muted) showNotice("声音已开启"); });
     } else {
       muteSound();
-      showNotice("音效已关闭");
+      showNotice("声音已关闭");
     }
   }
 
@@ -355,6 +355,10 @@
   }
 
   $("start-sound")?.addEventListener("click", () => {
+    if (sound?.failed) {
+      sound.recover();
+      if (playing()) sound.play(currentTime);
+    }
     muted = false;
     sound?.setMuted(false);
     updateUI(true);
