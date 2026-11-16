@@ -106,7 +106,7 @@
   }
   function head(index,label,dark=false){
     const m=portrait?60:70,fg=dark?"#b5c99c":"#6e825e",fs=portrait?17:14;
-    text("项目设想  /  概念示意",m,portrait?48:42,fs,fg);
+    text("一个只和自己聊天的 App",m,portrait?48:42,fs,fg);
     text(String(index+1).padStart(2,"0")+" / "+String(scenes.length).padStart(2,"0"),W-m,portrait?48:42,fs,dark?"#739269":"#9baa8a",400,"right","Consolas,monospace");
     line(m,portrait?90:78,W-m,portrait?90:78,dark?"#4a6341":"#d3dcc8");
     if(label)text(label,m,portrait?119:108,portrait?17:14,fg);
@@ -475,21 +475,22 @@
     ctx.strokeStyle=color;ctx.lineWidth=1.25;ctx.stroke();ctx.restore();
   }
   function fusionThread(x,y,w,h,t,events,zoom){
-    const enterWindow=enter(t,.9,1.1);
+    const enterWindow=enter(t,.18,.42);
     group(enterWindow,0,(1-enterWindow)*22,()=>{
-      shadow(()=>rr(x,y,w,h,lerp(17,20,zoom),C.white,"#cbdabb"),"#2545231c",35,17);
+      shadow(()=>rr(x,y,w,h,lerp(17,20,zoom),C.white,"#cfddbf"),"#2545231c",40,20);
       const pad=lerp(16,22,zoom),header=lerp(67,77,zoom),avatar=lerp(29,40,zoom),fs=lerp(15,21,zoom);
       rr(x+pad,y+18,avatar,avatar,lerp(9,12,zoom),C.pale);
       icon("chat",x+pad+avatar*.2,y+18+avatar*.2,avatar*.6);
       text("给自己发消息",x+pad+avatar+12,y+17,fs,C.ink,600);
-      text("我的聊天记录",x+pad+avatar+12,y+19+fs+7,lerp(10,13,zoom),"#92a27e");
+      text("我的聊天记录",x+pad+avatar+12,y+lerp(41,45,zoom),lerp(10,13,zoom),"#92a27e");
+      group(zoom,0,0,()=>text("概念示意",x+w-pad,y+26,12,"#94a780",400,"right"));
       line(x+pad,y+header,x+w-pad,y+header,"#e0e7d5");
       const bodyTop=y+header+13,bodyBottom=y+h-59,row=Math.min(51,(bodyBottom-bodyTop)/9),bubbleH=Math.min(37,row-6);
       ctx.save();ctx.beginPath();ctx.rect(x+pad,bodyTop,w-pad*2,bodyBottom-bodyTop+1);ctx.clip();
       const received=events.filter(e=>t>=e.arrive);
       const occupied=received.length;
       received.forEach((e,k)=>{
-        const settle=enter(t,e.arrive,.42),last=received[received.length-1],push=last&&k<occupied-1?enter(t,last.arrive,.42):1;
+        const settle=enter(t,e.arrive,.2),last=received[received.length-1],push=last&&k<occupied-1?enter(t,last.arrive,.2):1;
         const remaining=occupied-1-k;
         const yy=bodyBottom-bubbleH-remaining*row+(k<occupied-1?(1-push)*row:0);
         const bw=lerp(w*.62,w*.74,zoom),bx=x+w-pad-bw;
@@ -503,21 +504,24 @@
       });
       ctx.restore();
       rr(x+pad,y+h-38,w-pad*2,24,6,"#edf2e6");
-      text("给自己发消息…",x+pad+10,y+h-33,lerp(9,10,zoom),"#98a98a");
+      text("给自己发消息…",x+pad+lerp(10,12,zoom),y+h-33,lerp(9,10,zoom),"#98a98a");
       // The short illuminated line is the only shared entrance.
-      const hit=events.reduce((v,e)=>Math.max(v,1-clamp(Math.abs(t-e.arrive)/.36)),0);
+      const hit=events.reduce((v,e)=>Math.max(v,1-clamp(Math.abs(t-e.arrive)/.18)),0);
       group(hit*.9,0,0,()=>{
         line(x-1,y+h-39,x-1,y+h-13,"#8ab065",3);
         circle(x-1,y+h-26,8,null,"#a8c88b",1);
       });
     });
   }
-  function scenePurposes(t){
+  function scenePurposes(){
+    // This whole sequence is choreographed in real playback seconds. Its
+    // arrival, camera move and final caption never inherit source-time jumps.
+    const t=motionLocalTime;
     background(false,t);head(4,"核心理念");
     const order=[2,5,8,1,4,7,0,3,6];
-    const events=order.map((index,n)=>({index,start:4.75+n*.4,arrive:4.75+n*.4+2.05}));
-    const zoom=smooth((t-11.15)/2.6),sourceFade=1-smooth((t-10.25)/.7);
-    const initialTitle=1-smooth((t-10.1)/.4);
+    const events=order.map((index,n)=>({index,start:1.05+n*.36,arrive:1.05+n*.36+1.8}));
+    const zoom=clamp((t-5.85)/2.7),sourceFade=1-smooth((t-5.7)/.45);
+    const initialTitle=1-smooth((t-5.5)/.35);
     group(initialTitle,0,0,()=>text("多种用途，一个聊天入口。",800,157,60,C.ink,600,"center"));
     const x=lerp(1168,830,zoom),y=lerp(290,112,zoom),w=lerp(310,580,zoom),h=lerp(460,720,zoom);
     const source={x:136,y:286,w:280,h:108,gap:22};
@@ -525,16 +529,16 @@
     const positions=purposes.map((_,i)=>({x:source.x+(i%3)*(source.w+source.gap),y:source.y+Math.floor(i/3)*(source.h+source.gap)}));
 
     // Subtle curves appear after the complete grid has been read.
-    if(t>4.1&&sourceFade>0){
+    if(t>.8&&sourceFade>0){
       events.forEach(e=>{
         const s=positions[e.index],a={x:s.x+source.w/2,y:s.y+source.h/2};
         const points=[a,{x:a.x+205,y:a.y},{x:1090,y:a.y},{x:port.x,y:port.y}];
-        fusionPath(points,1,"#b7cba4",sourceFade*.22*enter(t,4.1,.6));
+        fusionPath(points,1,"#b7cba4",sourceFade*.22*enter(t,.8,.25));
       });
     }
     purposes.forEach(([name,label],i)=>{
-      const e=events.find(v=>v.index===i),p=positions[i],ready=enter(t,.4+i*.1,.7);
-      const peel=smooth((t-e.start)/.42),gone=smooth((t-e.start)/.2),a=ready*sourceFade;
+      const e=events.find(v=>v.index===i),p=positions[i],ready=enter(t,.06+i*.035,.4);
+      const peel=smooth((t-e.start)/.24),gone=smooth((t-e.start)/.15),a=ready*sourceFade;
       group(a,0,(1-ready)*20,()=>{
         // The unlabelled outline remains briefly, making each departure legible.
         rr(p.x,p.y,source.w,source.h,15,lerp(1,0,gone)>.01?"#f8fbf2":"#f0f4e8","#d5e1c8");
@@ -548,12 +552,12 @@
     // Right column leaves first, so later rows cross vacated cells rather than
     // covering labels that are still being read. At most two pieces share a lane.
     events.forEach(e=>{
-      const flight=transferProgress(e.start+.2,1.85);
-      if(t<e.start+.2||t>e.arrive+.12)return;
+      const flight=clamp((t-e.start-.15)/1.65);
+      if(t<e.start+.15||t>e.arrive+.08)return;
       const s=positions[e.index],a={x:s.x+source.w/2,y:s.y+source.h/2};
       const points=[a,{x:a.x+205,y:a.y},{x:1090,y:a.y},{x:port.x,y:port.y}];
       const curveProgress=fusionParameterAtDistance(points,flight),p=fusionBezier(...points,curveProgress);
-      const into=1-smooth((flight-.83)/.17),appearance=enter(t,e.start+.2,.22),width=lerp(202,105,smooth((flight-.65)/.35)),height=lerp(51,28,flight);
+      const into=1-smooth((flight-.83)/.17),appearance=enter(t,e.start+.15,.15),width=lerp(202,105,smooth((flight-.65)/.35)),height=lerp(51,28,flight);
       group(appearance*into,0,0,()=>{
         fusionPath(points,curveProgress,"#a2bd89",.45);
         shadow(()=>rr(p.x-width/2,p.y-height/2,width,height,9,C.white,"#b8cea1"),"#62804312",12,6);
@@ -563,9 +567,9 @@
       },1,p.x,p.y,(flight<.8?Math.sin(flight*Math.PI)*.035:0)*(s.y<500?1:-1));
     });
     fusionThread(x,y,w,h,t,events,zoom);
-    group(enter(t,1.5,.8)*(1-smooth((t-10.3)/.6)),0,0,()=>text("同一条时间线",1323,778,17,"#8aa273",400,"center"));
-    group(enter(t,2.1,.7)*(1-smooth((t-10.3)/.6)),0,0,()=>subtitle(["不需要提前分类，直接发送。"]));
-    const finalTitle=enter(t,11.1,.95);
+    group(enter(t,.55,.3)*(1-smooth((t-5.5)/.35)),0,0,()=>text("同一条时间线",1323,778,17,"#8aa273",400,"center"));
+    group(enter(t,.7,.3)*(1-smooth((t-5.5)/.35)),0,0,()=>subtitle(["不需要提前分类，直接发送。"]));
+    const finalTitle=enter(t,5.85,.35);
     group(finalTitle,0,(1-finalTitle)*25,()=>{
       lines(["多种用途，","一个聊天入口。"],110,258,58,C.ink,600,1.4);
       lines(["所有信息先作为普通消息，","进入同一条时间线。"],114,475,25,C.muted,400,1.95);
