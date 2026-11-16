@@ -10,7 +10,7 @@
   const C = {paper:"#f3f3ed",ink:"#23372c",green:"#1c523b",muted:"#718367",line:"#ccd6bf",pale:"#e6eddc",lime:"#cfe397",dark:"#1e3d2d",white:"#f7faee"};
   const FONT = '"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif';
   let W=1600, H=900, portrait=false, lastTime=2.1, pixelWidth=0, pixelHeight=0;
-  let activeScene=null,motionLocalTime=0;
+  let activeScene=null,motionLocalTime=0,pageChange=null;
   const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
   const lerp=(a,b,p)=>a+(b-a)*p;
   const ease=x=>1-Math.pow(1-clamp(x),3);
@@ -85,6 +85,13 @@
   function group(alpha,dx,dy,draw,scale=1,cx=0,cy=0,rotation=0){
     if(alpha<=0)return;ctx.save();ctx.globalAlpha*=clamp(alpha);ctx.translate(dx,dy);ctx.translate(cx,cy);ctx.rotate(rotation);ctx.scale(scale,scale);ctx.translate(-cx,-cy);draw();ctx.restore();
   }
+  function pagePart(kind,index,draw){
+    if(!pageChange){draw();return}
+    const progress=ease(pageChange.time/.72);
+    // Both complete compositions travel as pages, without crossfading, card
+    // morphs or overlapping text from two different layouts.
+    group(1,pageChange.mode==="in"?W*(1-progress):-W*progress,0,draw);
+  }
   function reveal(t,delay,draw,dy=32,duration=.9){
     const p=delay<=.15?1:enter(t,delay,duration);group(p,0,(1-p)*dy,draw);
   }
@@ -96,6 +103,7 @@
   }
   function shadow(draw,color="#203a2620",blur=40,dy=18){ctx.save();ctx.shadowColor=color;ctx.shadowBlur=blur;ctx.shadowOffsetY=dy;draw();ctx.restore()}
   function background(dark,t=0){
+    if(pageChange)return;
     ctx.fillStyle=dark?C.dark:C.paper;ctx.fillRect(0,0,W,H);
     const grad=ctx.createRadialGradient(W*.85,H*.25,0,W*.6,H*.5,W*.7);
     grad.addColorStop(0,dark?"#3e604b55":"#dbe6ce65");grad.addColorStop(1,dark?"#1e3d2d00":"#f3f3ed00");
@@ -461,9 +469,11 @@
   function sceneFriction(t){
     background(false,t);head(3,"为什么想自己做一个 / 现有方案的不便");
     const q=t-7;
-    if(t<4){
-      lines(["在三种系统之间传文件，","却要来回切换登录。"],110,188,53,C.ink,600,1.4);
-      paragraph("我经常需要在 Mac、Windows 和 Linux 之间传文件，常用的聊天软件又不方便多台电脑同时登录。",114,410,630,26,C.muted,1.85);
+    if(t<7){
+      lines(["多台电脑来回切换，","记录也未必能一直留下。"],110,188,53,C.ink,600,1.4);
+      lines(["我常在 Mac、Windows 和 Linux 之间传文件，","却要在聊天软件里来回切换登录。"],114,405,25,C.muted,400,1.9);
+      lines(["微信要自己保留、备份和迁移本地记录；","QQ 的云端漫游，也有期限和内容范围。"],114,549,23,C.muted,400,1.9);
+      text("即使是飞书，免费版也只能查看最近 18 个月的记录。",114,699,18,"#8b9b7b");
       const names=["macOS","Windows","Linux"],centres=[918,1136,1354];
       const current=Math.min(2,Math.floor(Math.max(0,t-.45)/.95));
       centres.forEach((cx,i)=>{
@@ -474,22 +484,7 @@
       line(842,601,1430,601,"#cbd8bd",1.5);
       const p=clamp((t-.45)/1.9),cx=lerp(918,1354,p);
       circle(cx,601,5,"#668e4e");
-      text("常用聊天软件的登录限制",1136,648,23,C.green,500,"center");
-    }else if(t<7){
-      lines(["云端记录，","也可能有保存期限。"],110,188,56,C.ink,600,1.4);
-      lines(["飞书免费版可查看最近 18 个月的聊天记录。","对我来说，这些记录是想一直留下来的。"],114,410,26,C.muted,400,1.85);
-      text("飞书 · 免费版",1168,222,23,C.green,500,"center");
-      text("18",1145,278,161,C.ink,500,"center","Georgia,serif");
-      text("个月",1310,389,28,C.green);
-      const p=clamp((t-4.1)/.65);
-      line(867,536,1461,536,"#ccd6bf",3);
-      line(1043,536,lerp(1043,1461,p),536,"#789b5b",6);
-      line(1043,512,1043,560,"#a3b98c",1.5);circle(1461,536,5,"#789b5b");
-      text("更早的记录",948,584,20,"#97a28b",400,"center");
-      text("最近 18 个月",1252,584,24,C.green,500,"center");
-      text("超出期限，无法查看",948,633,16,"#9aa58d",400,"center");
-      text("可以搜索和查看",1252,633,18,"#82996c",400,"center");
-      text("来源：飞书官方权益说明 · 2026-11-16 核对",114,711,14,"#8b9b7b");
+      text("本地留存 · 备份迁移 · 漫游期限",1136,657,22,C.green,500,"center");
     }else{
       lines(["想到什么就想发条消息，","不想先建文档、再分类。"],110,188,53,C.ink,600,1.4);
       paragraph("我本来就比较懒。想到什么直接发条消息，总比打开笔记软件、新建文档、考虑怎么分类方便得多。",114,410,630,26,C.muted,1.85);
@@ -501,18 +496,18 @@
       text("笔记软件 / 新建文档",1163,238,18,"#8b9b7a",400,"center");
       rr(841,273,154,440,[0,0,0,17],"#eff3e9");
       text("我的笔记",864,304,20,C.green,500);
-      ["学习","生活","未分类"].forEach((label,i)=>{
+      ["设计","摄影","未分类"].forEach((label,i)=>{
         if(i===2)rr(851,460,134,42,8,"#e2ead8");
         icon("folder",865,363+i*54,20,"#95aa81");text(label,898,362+i*54,18,"#82946f");
       });
       text("未命名文档",1033,320,32,C.ink,500);
       line(1033,381,1446,381,"#e0e7d8");
-      reveal(q,.24,()=>text("今天终于把实验跑通了。",1034,418,25,C.ink),0,.18);
-      group(1-smooth((q-.9)/.2),0,0,()=>line(1321,415,1321,449,"#7a985c",2));
+      reveal(q,.24,()=>lines(["海报试试只用黑白，","让标题沿楼梯的方向排。"],1034,411,24,C.ink,400,1.65),0,.18);
+      group(1-smooth((q-.9)/.2),0,0,()=>line(1303,450,1303,479,"#7a985c",2));
       reveal(q,.95,()=>{
         shadow(()=>rr(1167,489,284,196,13,"#fffef8","#cbd7bc"),"#30452220",24,12);
         text("保存到哪个分类",1188,508,19,C.green,500);
-        ["学习","生活","其他"].forEach((label,i)=>{
+        ["设计","摄影","其他"].forEach((label,i)=>{
           icon("folder",1189,551+i*38,19,"#91a879");
           text(label,1220,550+i*38,18,"#81936e");
         });
@@ -813,22 +808,22 @@
     if(height>=121)text(results[index][1],x+30,y+90,26,C.green,500);
   }
   function sceneOrganize(t){
-    background(false,t);head(7,"AI 整理的几种典型用法");
+    background(false,t);pagePart("header",0,()=>head(7,"AI 整理的几种典型用法"));
     const progress=smooth((t-10.6)/1),sourceVisible=1-smooth(progress/.4);
     const examples=[
       {index:0,x:147,icon:"film",source:"想看《布达佩斯大饭店》",title:"布达佩斯大饭店",detail:"电影 · 想看",category:"书单影单番单",delay:.4},
       {index:1,x:862,icon:"list",source:"明早给老师发邮件",title:"给老师发邮件",detail:"待办 · 明早",category:"待办与提醒",delay:.8}
     ];
-    organizeSlideTitle(progress);
+    pagePart("title",0,()=>organizeSlideTitle(progress));
     if(sourceVisible>0){
       examples.forEach(item=>organizeSourceShell(item.x-22,item.source,sourceVisible));
     }
     // The extracted cards are the same objects before and after the change.
     // Their visible title settles into a small example caption first; only then
     // does the information-view label enter its own clipped row.
-    examples.forEach(item=>organizeMovingResult(item,t,progress));
-    for(let index=2;index<6;index++)organizeNewView(index,t);
-    text(progress<.5?"AI 整理的结果，应当能够追溯来源。":"整理结果可以修改、纠正或重新生成，不影响原始消息。",800,810,22,"#6f825d",400,"center");
+    examples.forEach(item=>pagePart("card",item.index,()=>organizeMovingResult(item,t,progress)));
+    for(let index=2;index<6;index++)pagePart("card",index,()=>organizeNewView(index,t));
+    pagePart("footer",0,()=>text(progress<.5?"AI 整理的结果，应当能够追溯来源。":"整理结果可以修改、纠正或重新生成，不影响原始消息。",800,810,22,"#6f825d",400,"center"));
   }
 
   function sceneDevices(t) {
@@ -945,7 +940,7 @@
 
   function capabilityGrid(items,t,y=330,dark=false,stable=false,previous=null){
     const bw=430,bh=126,gap=24,x0=131;
-    items.forEach((label,i)=>{
+    items.forEach((label,i)=>pagePart("card",i,()=>{
       const x=x0+(i%3)*(bw+gap),yy=y+Math.floor(i/3)*(bh+24);
       const frame=()=>{
         rr(x,yy,bw,bh,15,dark?"#2b4c34":"#f8faf2",dark?"#5b7849":"#d2dfc3");
@@ -959,22 +954,22 @@
       if(previous&&p<1)text(previous[i],x+24,yy+79-p*38,25,dark?"#d9e7c8":"#426438",500);
       text(label,x+24,yy+79+(1-p)*38,25,dark?"#d9e7c8":"#426438",500);
       ctx.restore();
-    });
+    }));
   }
 
   function sceneFeatures(t){
-    background(false,t);head(8,"希望完善的常用操作");
+    background(false,t);pagePart("header",0,()=>head(8,"希望完善的常用操作"));
     const cuts=[0,10],phase=t<10?0:1,q=phase?t-10:t;
     const items=[["截图粘贴","文件拖放","上传进度","文件预览","复制粘贴","消息搜索"],["增量拉取","手动刷新","离线缓存","历史检索","备份恢复","完整数据导出"]];
-    clipSwap(t,cuts,{x:105,y:148,w:1390,h:100},i=>text(["消息与文件传输","完整历史漫游与长期保存"][i],110,165,i?57:61,C.ink,600),"cut",.5);
-    clipSwap(t,cuts,{x:110,y:252,w:1380,h:52},i=>text(["文字、图片、截图、链接与各类文件。","新设备登录，找回全部历史内容，不依赖旧设备在线。"][i],114,260,i?26:27,C.muted));
+    pagePart("title",0,()=>clipSwap(t,cuts,{x:105,y:148,w:1390,h:100},i=>text(["消息与文件传输","完整历史漫游与长期保存"][i],110,165,i?57:61,C.ink,600),"cut",.5));
+    pagePart("description",0,()=>clipSwap(t,cuts,{x:110,y:252,w:1380,h:52},i=>text(["文字、图片、截图、链接与各类文件。","新设备登录，找回全部历史内容，不依赖旧设备在线。"][i],114,260,i?26:27,C.muted)));
     capabilityGrid(items[phase],q,340,false,true,phase?items[0]:null);
-    clipSwap(t,cuts,{x:100,y:711,w:1400,h:131},i=>{
+    pagePart("footer",0,()=>clipSwap(t,cuts,{x:100,y:711,w:1400,h:131},i=>{
       if(i===0){
         lines(["文案、面试稿、Presentation 稿件和代码片段，","也希望提供方便的编辑、阅读和跨设备使用体验。"],800,722,23,"#7d936a",400,1.8,"center");
         text("尤其重视桌面端的输入、文件操作、系统集成和 UI 渲染质量。",800,812,20,"#879d74",400,"center");
       }else subtitle(["数据完整性优先于毫秒级即时同步。"]);
-    },"cut",.5);
+    },"cut",.5));
   }
 
   // One account shares a centred trunk with three distinct client sessions.
@@ -1107,7 +1102,7 @@
     {start:0,end:3,label:"开篇",description:"这是对一个项目设想的描述，不是项目名称。",sourceTimes:[[0.0,0],[2.175,2.9],[3,9]],draw:sceneTitle},
     {start:3,end:14,label:"我和文件传输助手",description:"我经常给自己发消息。除了文件，还会直接发送备忘、记录、文案、讲稿和单词。",sourceTimes:[[0.0,0],[3.006667,4.1],[3.373333,8.1],[3.666667,8.5],[6.673333,12.6],[7.04,17.1],[7.333333,17.5],[10.34,21.6],[11,27]],draw:sceneOrigin},
     {start:14,end:23,label:"零碎的生活记录",description:"我会留下喜欢的摄影作品、想看的书和电影、想补的番；零碎消息也成了生活记录。",sourceTimes:[[0.0,0],[2.3625,4.35],[3.0,7],[5.3625,11.35],[6.0,14],[8.3625,18.35],[9,21]],draw:sceneMemory},
-    {start:23,end:34,label:"现有方案的不便",description:"常用聊天软件不方便多台电脑同时登录；飞书免费版仅可查看最近 18 个月的聊天记录；笔记软件需要打开、新建文档和考虑分类。",sourceTimes:[[0,0],[11,11]],draw:sceneFriction},
+    {start:23,end:34,label:"现有方案的不便",description:"多电脑切换登录、本地记录需要保留与迁移、云端漫游有期限和范围；飞书仅作补充例子。记录灵感时，希望少一些新建文档与分类的步骤。",sourceTimes:[[0,0],[11,11]],draw:sceneFriction},
     {start:34,end:40,label:"想自己做一个",description:"macOS、Windows 和 Linux 分别连接云端，找回完整历史记录。",sourceTimes:[[0.0,0],[3.75,5],[4.65,11.5],[6,18]],draw:sceneNeed},
     {start:40,end:47,label:"核心理念",description:"九种用途沿各自路径成为消息，共同进入唯一聊天入口，保留在同一条时间线。",sourceTimes:[[0,0],[5.85,11.15],[6.45,13.75],[7,18]],draw:scenePurposes},
     {start:47,end:51,label:"给自己发消息",description:"原案中的八条文字和文件消息，以及建筑摄影。",sourceTimes:[[0,0],[4,4]],draw:sceneChat},
@@ -1139,12 +1134,32 @@
     ctx.setTransform(pw/W,0,0,ph/H,0,0);
     return {width:W,height:H,portrait};
   }
+  function renderPageChange(time){
+    const next=scenes.find(s=>s.draw===sceneFeatures),previous=scenes[scenes.indexOf(next)-1];
+    const start=next.start-.36;
+    if(time<start||time>=start+.72)return false;
+    const savedScene=activeScene,savedLocal=motionLocalTime;
+    background(false,time);
+    ctx.save();ctx.beginPath();ctx.rect(0,0,W,H);ctx.clip();
+    try{
+      pageChange={mode:"out",time:time-start};
+      activeScene=previous;motionLocalTime=previous.end-previous.start;
+      previous.draw(sourceTime(previous,motionLocalTime));
+      pageChange={mode:"in",time:time-start};
+      activeScene=next;motionLocalTime=0;
+      next.draw(sourceTime(next,0));
+    }finally{
+      pageChange=null;activeScene=savedScene;motionLocalTime=savedLocal;ctx.restore();
+    }
+    return true;
+  }
   function render(time){
     lastTime=clamp(time,0,114);resize();
     const index=scenes.findIndex(s=>lastTime>=s.start&&lastTime<s.end),i=index<0?scenes.length-1:index,scene=scenes[i];
     activeScene=scene;motionLocalTime=lastTime-scene.start;
-    ctx.save();ctx.globalAlpha=1;scene.draw(sourceTime(scene,lastTime-scene.start));ctx.restore();
-    // Scene changes are clean cuts; shared layouts animate inside their own clips.
+    ctx.save();ctx.globalAlpha=1;
+    if(!renderPageChange(lastTime))scene.draw(sourceTime(scene,lastTime-scene.start));
+    ctx.restore();
     canvas.dataset.scene=String(i);canvas.dataset.time=lastTime.toFixed(2);
     return scene;
   }
