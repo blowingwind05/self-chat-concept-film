@@ -3,19 +3,20 @@
   "use strict";
 
   const AudioEngine = window.AudioContext || window.webkitAudioContext;
-  const SCENE_TIMES = [9, 36, 57, 75, 93, 121, 140, 151, 163, 173, 183, 201, 231, 239, 251, 263, 283];
-  const MESSAGE_TIMES = [94, 96, 98, 100, 102, 104, 106, 108, 110];
-  const CHORD_TIMES = [0.4, 37, 76.2, 122.2, 152.2, 184.2, 240.2, 284.2];
+  // Cue times follow the edited timeline; original-to-edited mapping is in work/pacing-audit.json.
+  const SCENE_TIMES = [4.0, 19.0, 31.0, 39.0, 52.0, 66.0, 74.0, 80.0, 84.0, 90.0, 96.0, 106.0, 122.0, 127.0, 133.4, 138.0, 147.0];
+  const MESSAGE_TIMES = [52.681319, 54.043956, 55.406593, 56.769231, 58.131868, 59.494505, 60.857143, 62.21978, 63.582418];
+  const CHORD_TIMES = [0.4, 19.724138, 39.789474, 67.2, 81.2, 97.2, 128.096552, 148.2];
   const TONES = [523.251, 587.33, 659.255, 783.991, 880];
 
   const cues = [
     ...SCENE_TIMES.map((time, index) => ({ time, type: "paper", index })),
     ...MESSAGE_TIMES.map((time, index) => ({ time, type: "message", index })),
     ...CHORD_TIMES.map((time, index) => ({ time, type: "chord", index })),
-    { time: 143.4, type: "message", index: 2 },
-    { time: 149, type: "message", index: 4 },
-    { time: 160, type: "resolve", index: 0 },
-    { time: 293.3, type: "resolve", index: 1 },
+    { time: 77.4, type: "message", index: 2 },
+    { time: 79.25, type: "message", index: 4 },
+    { time: 83.5, type: "resolve", index: 0 },
+    { time: 151.4, type: "resolve", index: 1 },
   ].sort((a, b) => a.time - b.time);
 
   function nextCue(time) {
@@ -30,8 +31,8 @@
   }
 
   class InboxFilmSound {
-    constructor({ duration = 296 } = {}) {
-      this.duration = Number.isFinite(duration) && duration > 0 ? duration : 296;
+    constructor({ duration = 153 } = {}) {
+      this.duration = Number.isFinite(duration) && duration > 0 ? duration : 153;
       this.supported = Boolean(AudioEngine);
       this.muted = false;
       this._context = null;
