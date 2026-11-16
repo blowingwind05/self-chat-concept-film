@@ -801,7 +801,10 @@
       rr(x,297,635,365,20,"#f9fbf3","#d4dfc6");
       text("原始消息",x+26,322,16,"#95a482");
       text(source,x+26,364,28,C.ink);
-      ctx.save();ctx.translate(x+317,457);ctx.rotate(Math.PI/2);icon("arrow",-15,-15,30,"#8eaa74");ctx.restore();
+      const arrow=enter(t,delay+1.2,.32);
+      group(arrow,0,-12*(1-arrow),()=>{
+        ctx.save();ctx.translate(x+317,457);ctx.rotate(Math.PI/2);icon("arrow",-15,-15,30,"#8eaa74");ctx.restore();
+      });
     }),0,20,.35);
   }
   function organizeMovingResult(item,t,progress){
