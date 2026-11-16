@@ -10,6 +10,7 @@
   const C = {paper:"#f3f3ed",ink:"#23372c",green:"#1c523b",muted:"#718367",line:"#ccd6bf",pale:"#e6eddc",lime:"#cfe397",dark:"#1e3d2d",white:"#f7faee"};
   const FONT = '"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif';
   let W=1600, H=900, portrait=false, lastTime=2.1, pixelWidth=0, pixelHeight=0;
+  let activeScene=null,motionLocalTime=0;
   const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
   const lerp=(a,b,p)=>a+(b-a)*p;
   const ease=x=>1-Math.pow(1-clamp(x),3);
@@ -123,6 +124,23 @@
   function packet(points,t,color=C.lime){
     const seg=points.slice(1).map((p,i)=>Math.hypot(p[0]-points[i][0],p[1]-points[i][1]));let dist=(t%1)*seg.reduce((a,b)=>a+b,0);
     for(let i=0;i<seg.length;i++){if(dist<=seg[i]){const p=dist/seg[i];circle(lerp(points[i][0],points[i+1][0],p),lerp(points[i][1],points[i+1][1],p),3.5,color);break}dist-=seg[i]}
+  }
+  // Content timing may skip ahead to shorten a hold. Moving transfers use the
+  // real playhead instead, so that edit never changes their velocity mid-path.
+  function editedTimeAt(source){
+    const points=activeScene.sourceTimes;
+    for(let i=1;i<points.length;i++){
+      const before=points[i-1],after=points[i];
+      if(source<=after[1])return lerp(before[0],after[0],clamp((source-before[1])/(after[1]-before[1])));
+    }
+    return points[points.length-1][0];
+  }
+  function transferPhase(sourceStart,cyclesPerSecond,offset=0){
+    return Math.max(0,motionLocalTime-editedTimeAt(sourceStart))*cyclesPerSecond+offset;
+  }
+  function transferProgress(sourceStart,duration){
+    const start=editedTimeAt(sourceStart),end=editedTimeAt(sourceStart+duration);
+    return clamp((motionLocalTime-start)/(end-start));
   }
   function smallCard(x,y,w,h,type,title,detail="",rotation=0,t=0){
     group(1,0,Math.sin(t*.65+x*.01)*4,()=>{
@@ -297,13 +315,13 @@
     text(detail, x + 109, y + 70, 19, "#7a9067");
   }
 
-  function deviceIndependentLink(points, t, delay, speed = .25) {
+  function deviceIndependentLink(points, t, delay, speed = .34) {
     // Each path has one cloud port and one client. There is no client-to-client
     // segment and no shared horizontal bus that can look like device chaining.
     const p = enter(t, delay, 1.15);
     dotLine(points, p, "#9eb98a", 1.7);
     if (t > delay + 1.3) {
-      packet(points.slice().reverse(), (t - delay) * speed, "#739c55");
+      packet(points.slice().reverse(), transferPhase(delay+1.3,speed), "#739c55");
     }
   }
 
@@ -432,6 +450,24 @@
     const q=1-p;
     return {x:q*q*q*a.x+3*q*q*p*b.x+3*q*p*p*c.x+p*p*p*d.x,y:q*q*q*a.y+3*q*q*p*b.y+3*q*p*p*c.y+p*p*p*d.y};
   }
+  const fusionArcCache=new Map();
+  function fusionParameterAtDistance(points,progress){
+    const key=JSON.stringify(points);
+    let arc=fusionArcCache.get(key);
+    if(!arc){
+      const samples=192,lengths=[0];let previous=points[0];
+      for(let i=1;i<=samples;i++){
+        const point=fusionBezier(...points,i/samples);
+        lengths.push(lengths[i-1]+Math.hypot(point.x-previous.x,point.y-previous.y));
+        previous=point;
+      }
+      arc={samples,lengths};fusionArcCache.set(key,arc);
+    }
+    const target=clamp(progress)*arc.lengths[arc.samples];
+    let low=0,high=arc.samples;
+    while(high-low>1){const middle=(low+high)>>>1;if(arc.lengths[middle]<target)low=middle;else high=middle}
+    return (low+(target-arc.lengths[low])/(arc.lengths[high]-arc.lengths[low]))/arc.samples;
+  }
   function fusionPath(points,p,color,alpha=1){
     ctx.save();ctx.globalAlpha*=alpha;ctx.beginPath();ctx.moveTo(points[0].x,points[0].y);
     const count=40,stop=Math.max(1,Math.ceil(clamp(p)*count));
@@ -512,14 +548,14 @@
     // Right column leaves first, so later rows cross vacated cells rather than
     // covering labels that are still being read. At most two pieces share a lane.
     events.forEach(e=>{
-      const flight=clamp((t-e.start-.2)/1.85);
+      const flight=transferProgress(e.start+.2,1.85);
       if(t<e.start+.2||t>e.arrive+.12)return;
       const s=positions[e.index],a={x:s.x+source.w/2,y:s.y+source.h/2};
       const points=[a,{x:a.x+205,y:a.y},{x:1090,y:a.y},{x:port.x,y:port.y}];
-      const p=fusionBezier(...points,smooth(flight));
+      const curveProgress=fusionParameterAtDistance(points,flight),p=fusionBezier(...points,curveProgress);
       const into=1-smooth((flight-.83)/.17),appearance=enter(t,e.start+.2,.22),width=lerp(202,105,smooth((flight-.65)/.35)),height=lerp(51,28,flight);
       group(appearance*into,0,0,()=>{
-        fusionPath(points,smooth(flight),"#a2bd89",.45);
+        fusionPath(points,curveProgress,"#a2bd89",.45);
         shadow(()=>rr(p.x-width/2,p.y-height/2,width,height,9,C.white,"#b8cea1"),"#62804312",12,6);
         icon(purposes[e.index][0],p.x-width/2+13,p.y-11,22,"#719650");
         rr(p.x-width/2+47,p.y-4,width*.45,3.5,2,"#b0c49b");
@@ -622,13 +658,13 @@
     if(portrait){
       reveal(t,.9,()=>{rr(70,415,760,140,18,"#2a4d36","#688953");icon("chat",105,457,49,"#c8dda7");text("原始消息与附件",180,447,29,"#d7e6c4",500);text("完整保存",182,493,22,"#93b277");photoCrop(665,432,135,105,9)});
       const paths2=[[[450,555],[450,630],[260,630],[260,690]],[[450,555],[450,630],[640,630],[640,690]]];
-      paths2.forEach((p,i)=>{dotLine(p,enter(t,1.8,1.1),"#799a60");if(t>3)packet(p,t*.32+i*.4)});
+      paths2.forEach((p,i)=>{dotLine(p,enter(t,1.8,1.1),"#799a60");if(t>3)packet(p,transferPhase(3,.43,i*.4))});
       reveal(t,2.5,()=>processNode(65,690,370,350,"cloud","云端长期存储",["消息与附件","完整历史漫游","备份和恢复"],false));
       reveal(t,3.25,()=>processNode(465,690,370,350,"spark","AI 整理与归纳",["自动分类 · 信息提取","关联整理","语义检索"],true));
     }else{
       reveal(t,.8,()=>{miniChat(100,373,265,350,t,true);text("原始消息与附件",233,337,20,"#c5d9aa",400,"center")});
       const branches=[[[365,535],[480,535],[480,435],[655,435]],[[365,535],[480,535],[480,745],[1132,745],[1132,656]]];
-      branches.forEach((p,i)=>{dotLine(p,enter(t,1.8,1.5),"#6f9557");if(t>3.3)packet(p,t*.26+i*.45)});
+      branches.forEach((p,i)=>{dotLine(p,enter(t,1.8,1.5),"#6f9557");if(t>3.3)packet(p,transferPhase(3.3,.35,i*.45))});
       reveal(t,2.4,()=>processNode(655,350,360,330,"cloud","云端长期存储",["消息与附件","完整历史漫游","备份和恢复"],false));
       reveal(t,3.2,()=>processNode(1095,350,360,330,"spark","AI 整理与归纳",["自动分类 · 信息提取","关联整理","语义检索"],true));
     }
@@ -745,7 +781,7 @@
         [ports[i], 450],
         [client.cx, 552],
         [client.cx, 580]
-      ], t, 4.25 + i * .15, .22);
+      ], t, 4.25 + i * .15, .32);
     });
 
     reveal(t, 1.05, () => {
@@ -894,7 +930,7 @@
       reveal(q,.3,()=>{rr(810,389,180,145,15,"#2b4f37","#64854f");icon("chat",878,414,43,"#bad49b");text("客户端",900,481,25,"#d7e8c4",500,"center")});
       reveal(q,.3,()=>{rr(1170,280,325,365,20,"#294a33","#64854f");icon("server",1196,307,35,"#adce8d");text("服务端",1249,312,28,"#d7e8c4",500)});
       const path=[[990,461],[1170,461]];dotLine(path,enter(q,.6,1),active===0?"#c7df9d":"#688f52",active===0?3:1.5);
-      if(q>1.4)packet(path,q*.24,"#b6d48b");
+      if(q>1.4)packet(path,transferPhase(16.4,.65),"#b6d48b");
       reveal(q,.7,()=>{text("HTTPS",1080,403,23,active===0?"#d5e7b6":"#87ac6d",500,"center");text("传输加密",1080,494,17,"#8eb475",400,"center")});
       const modules=[{y:382,label:"访问控制",focus:active===1},{y:508,label:"限流与防护",focus:active===2}];
       modules.forEach(m=>{rr(1195,m.y,275,88,12,m.focus?"#50713e":"#35563a",m.focus?"#b4d18b":"#5c7d48",m.focus?2:1);text(m.label,1332,m.y+27,25,m.focus?"#ebf3d8":"#9fbe87",m.focus?500:400,"center")});
@@ -977,6 +1013,7 @@
   function render(time){
     lastTime=clamp(time,0,109);resize();
     const index=scenes.findIndex(s=>lastTime>=s.start&&lastTime<s.end),i=index<0?scenes.length-1:index,scene=scenes[i];
+    activeScene=scene;motionLocalTime=lastTime-scene.start;
     ctx.save();ctx.globalAlpha=1;scene.draw(sourceTime(scene,lastTime-scene.start));ctx.restore();
     // Scene changes are clean cuts; shared layouts animate inside their own clips.
     canvas.dataset.scene=String(i);canvas.dataset.time=lastTime.toFixed(2);
