@@ -2,7 +2,7 @@
 import numpy as np
 from scipy import signal
 SR=44100
-N=106*SR
+N=114*SR
 
 def norm(x):
     return (x/(np.max(np.abs(x))+1e-9)).astype(np.float32)
@@ -86,7 +86,7 @@ def foley_event(event,index):
     x=norm(edges(x,.003,min(.04,duration*.3)))
     return x
 
-def render_foley(direction,duration=106):
+def render_foley(direction,duration=114):
     global N
     N=round(duration*SR)
     out=np.zeros((N,2),np.float32)
@@ -95,9 +95,9 @@ def render_foley(direction,duration=106):
         x=foley_event(event,index)
         gain=event['gain']
         gain*= {'fusion_stream':1.6,'perspective_bloom':1.4,'air_link':1.25}.get(event['type'],1)
-        # These are the approved contact levels, shifted with the shortened edit.
-        if 36<=event['time']<43:
-            gain*=1.65 if event['time']<38 else (.9 if event['type']=='photo_paper' else 1.35)
+        # Preserve the contact levels in the message shot after the added chapter.
+        if 44<=event['time']<51:
+            gain*=1.65 if event['time']<46 else (.9 if event['type']=='photo_paper' else 1.35)
         add(out,x,event['time'],gain,event.get('pan',0),event.get('pan_end'))
         add(send,x,event['time'],gain*.12,event.get('pan',0),event.get('pan_end'))
     out+=room(send,.22,.65)
