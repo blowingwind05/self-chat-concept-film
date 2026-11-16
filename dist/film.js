@@ -761,7 +761,8 @@
       reveal(t,3.25,()=>processNode(465,690,370,350,"spark","AI 整理与归纳",["自动分类 · 信息提取","关联整理","语义检索"],true));
     }else{
       reveal(t,.8,()=>{miniChat(100,373,265,350,t,true);text("原始消息与附件",233,337,20,"#c5d9aa",400,"center")});
-      const branches=[[[365,535],[480,535],[480,435],[655,435]],[[365,535],[480,535],[480,745],[1132,745],[1132,656]]];
+      // Ports meet the cloud's left midpoint and the AI card's bottom midpoint.
+      const branches=[[[365,535],[480,535],[480,515],[655,515]],[[365,535],[480,535],[480,745],[1275,745],[1275,680]]];
       branches.forEach((p,i)=>{dotLine(p,enter(t,1.8,1.5),"#6f9557");if(t>3.3)packet(p,transferPhase(3.3,.35,i*.45))});
       reveal(t,2.4,()=>processNode(655,350,360,330,"cloud","云端长期存储",["消息与附件","完整历史漫游","备份和恢复"],false));
       reveal(t,3.2,()=>processNode(1095,350,360,330,"spark","AI 整理与归纳",["自动分类 · 信息提取","关联整理","语义检索"],true));
