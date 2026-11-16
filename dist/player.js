@@ -13,6 +13,7 @@
   const soundButton = $("sound-toggle");
   const soundUse = $("sound-use");
   const fullscreenButton = $("fullscreen");
+  const transport = $("transport");
   const timecode = $("timecode");
   const seek = $("seek");
   const sceneLabel = $("scene-label");
@@ -39,6 +40,9 @@
   let resumeAfterScrub = false;
   let disposed = false;
   let renderErrorShown = false;
+  let controlsTimer = 0;
+  let pointerOnTransport = false;
+  let keyboardInput = false;
   sound?.setMuted(muted);
 
   const clamp = (value) => Math.max(0, Math.min(duration, Number.isFinite(Number(value)) ? Number(value) : 0));
@@ -123,6 +127,7 @@
             : "已暂停 · 点击播放继续观看";
       if (hint.textContent !== nextHint) hint.textContent = nextHint;
     }
+    syncControls();
   }
 
   function draw(time = currentTime) {
@@ -281,11 +286,44 @@
     return document.fullscreenElement || document.webkitFullscreenElement;
   }
 
+  function controlsHeld() {
+    return isScrubbing || pointerOnTransport ||
+      (keyboardInput && Boolean(transport?.contains?.(document.activeElement)));
+  }
+
+  function clearControlsTimer() {
+    clearTimeout(controlsTimer);
+    controlsTimer = 0;
+  }
+
+  function syncControls() {
+    const canHide = fullscreenElement() === player && playing() && !disposed;
+    if (!canHide || controlsHeld()) {
+      clearControlsTimer();
+      player.dataset.controlsVisible = "true";
+    } else if (player.dataset.controlsVisible !== "false" && !controlsTimer) {
+      controlsTimer = window.setTimeout(() => {
+        controlsTimer = 0;
+        if (fullscreenElement() === player && playing() && !controlsHeld() && !disposed) {
+          player.dataset.controlsVisible = "false";
+        }
+      }, 1800);
+    }
+  }
+
+  function revealControls() {
+    clearControlsTimer();
+    player.dataset.controlsVisible = "true";
+    syncControls();
+  }
+
   function updateFullscreen() {
     const active = fullscreenElement() === player;
     player.dataset.fullscreen = String(active);
     fullscreenButton?.setAttribute("aria-label", active ? "退出全屏" : "全屏观看");
     fullscreenButton?.setAttribute("aria-pressed", String(active));
+    pointerOnTransport = false;
+    revealControls();
     redraw();
   }
 
@@ -328,6 +366,25 @@
   playButton?.addEventListener("click", togglePlayback);
   soundButton?.addEventListener("click", toggleSound);
   fullscreenButton?.addEventListener("click", toggleFullscreen);
+  player.addEventListener("pointermove", revealControls, { passive: true });
+  player.addEventListener("pointerdown", () => {
+    keyboardInput = false;
+    revealControls();
+  }, { passive: true });
+  transport?.addEventListener("pointerenter", (event) => {
+    if (event.pointerType === "touch") return;
+    pointerOnTransport = true;
+    revealControls();
+  });
+  transport?.addEventListener("pointerleave", () => {
+    pointerOnTransport = false;
+    revealControls();
+  });
+  transport?.addEventListener("focusin", revealControls);
+  transport?.addEventListener("focusout", () => {
+    // Let the browser finish moving focus before deciding whether to hide.
+    window.setTimeout(revealControls, 0);
+  });
   chapterButtons.forEach((button) => {
     button.addEventListener("click", () => seekTo(Number(button.dataset.seek), true));
   });
@@ -354,6 +411,8 @@
   window.addEventListener("pointercancel", finishScrubbing);
 
   document.addEventListener("keydown", (event) => {
+    keyboardInput = true;
+    revealControls();
     if (event.altKey || event.ctrlKey || event.metaKey) return;
     const target = event.target;
     if (target instanceof Element && target.closest("input,textarea,select,summary,[contenteditable='true']")) return;
