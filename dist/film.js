@@ -164,6 +164,37 @@
 
   const purposes=[["light","灵感创意"],["book","学习工作"],["file","文案与稿件"],["image","审美积累"],["film","书影音清单"],["history","生活回顾"],["list","待办与日程"],["link","网页收藏"],["folder","文件传输"]];
   const results=[["film","书单影单番单"],["list","待办与提醒"],["image","审美素材库"],["book","学习与笔记"],["history","生活回顾"],["search","智能检索"]];
+  const CHAT_ITEMS=[
+    {text:"想看《布达佩斯大饭店》",h:34,w:300},
+    {text:"明早给老师发邮件",h:34,w:236},
+    {lines:["各位老师好，我今天汇报的题目是……","首先介绍一下课题的研究背景……"],h:55,w:435},
+    {file:"讲稿_v3.pdf",detail:"PDF · 1.8 MB",h:48,w:228,type:"file"},
+    {photo:true,h:104,w:174},
+    {text:"想补《冰菓》",h:34,w:182},
+    {word:true,h:48,w:350},
+    {text:"今天终于把实验跑通了",h:34,w:280},
+    {file:"project-files.zip",detail:"128 MB",h:48,w:256,type:"folder"}
+  ];
+  const CHAT_SOURCE_ORDER=[2,5,8,1,4,7,0,3,6];
+  // Both shots use these same slots. The body scales with the window; revealing
+  // the actual message contents never moves or resizes a bubble afterward.
+  function chatSlots(x,y,w,h=720,pad=22,header=77){
+    const bodyTop=y+header+13,bodyHeight=h-header-72;
+    const sx=(w-pad*2)/536,sy=bodyHeight/571;
+    let offset=5;
+    return CHAT_ITEMS.map((item,index)=>{
+      const slot={x:x+w-pad-item.w*sx,y:bodyTop+offset*sy,
+        w:item.w*sx,h:item.h*sy,sx,sy,r:10*Math.min(sx,sy),index};
+      offset+=item.h+8;return slot;
+    });
+  }
+  function chatBubbleFrame(slot){rr(slot.x,slot.y,slot.w,slot.h,slot.r,"#e6eedc")}
+  function chatPlaceholder(slot,purpose){
+    const {x,y,w,h,sx,sy}=slot,is=22*Math.min(sx,sy);
+    icon(purposes[purpose][0],x+10*sx,y+(h-is)/2,is,"#7c9b61");
+    rr(x+44*sx,y+h*.34,w*.47,3.5*sy,2*sy,"#b4c79f");
+    rr(x+44*sx,y+h*.62,w*.29,3.5*sy,2*sy,"#c8d6b8");
+  }
   function sceneTitle(t){
     background(false,t);head(0,"一段关于记录、保存与整理的设想");
     const x=portrait?65:115, y=portrait?205:240, fs=portrait?71:84;
@@ -485,22 +516,18 @@
       text("我的聊天记录",x+pad+avatar+12,y+lerp(41,45,zoom),lerp(10,13,zoom),"#92a27e");
       group(zoom,0,0,()=>text("概念示意",x+w-pad,y+26,12,"#94a780",400,"right"));
       line(x+pad,y+header,x+w-pad,y+header,"#e0e7d5");
-      const bodyTop=y+header+13,bodyBottom=y+h-59,row=Math.min(51,(bodyBottom-bodyTop)/9),bubbleH=Math.min(37,row-6);
+      const bodyTop=y+header+13,bodyBottom=y+h-59,slots=chatSlots(x,y,w,h,pad,header);
       ctx.save();ctx.beginPath();ctx.rect(x+pad,bodyTop,w-pad*2,bodyBottom-bodyTop+1);ctx.clip();
       const received=events.filter(e=>t>=e.arrive);
       const occupied=received.length;
+      const last=received[occupied-1],push=last?enter(t,last.arrive,.12):1;
+      const finalBottom=slots[8].y+slots[8].h;
+      const currentBottom=occupied?slots[occupied-1].y+slots[occupied-1].h:finalBottom;
+      const previousBottom=occupied>1?slots[occupied-2].y+slots[occupied-2].h:currentBottom;
+      const stackOffset=finalBottom-lerp(previousBottom,currentBottom,push);
       received.forEach((e,k)=>{
-        const settle=enter(t,e.arrive,.2),last=received[received.length-1],push=last&&k<occupied-1?enter(t,last.arrive,.2):1;
-        const remaining=occupied-1-k;
-        const yy=bodyBottom-bubbleH-remaining*row+(k<occupied-1?(1-push)*row:0);
-        const bw=lerp(w*.62,w*.74,zoom),bx=x+w-pad-bw;
-        group(settle,(1-settle)*18,(1-settle)*12,()=>{
-          rr(bx,yy,bw,bubbleH,lerp(7,10,zoom),"#e6eedc");
-          const is=Math.min(22,bubbleH-13);
-          icon(purposes[e.index][0],bx+10,yy+(bubbleH-is)/2,is,"#7c9b61");
-          rr(bx+is+22,yy+bubbleH*.34,bw*.47,3.5,2,"#b4c79f");
-          rr(bx+is+22,yy+bubbleH*.62,bw*.29,3.5,2,"#c8d6b8");
-        });
+        const settle=enter(t,e.arrive,.12),slot={...slots[k],y:slots[k].y+stackOffset};
+        group(settle,0,0,()=>{chatBubbleFrame(slot);chatPlaceholder(slot,e.index)});
       });
       ctx.restore();
       rr(x+pad,y+h-38,w-pad*2,24,6,"#edf2e6");
@@ -518,7 +545,7 @@
     // arrival, camera move and final caption never inherit source-time jumps.
     const t=motionLocalTime;
     background(false,t);head(4,"核心理念");
-    const order=[2,5,8,1,4,7,0,3,6];
+    const order=CHAT_SOURCE_ORDER;
     const events=order.map((index,n)=>({index,start:1.05+n*.36,arrive:1.05+n*.36+1.8}));
     const zoom=clamp((t-5.85)/2.7),sourceFade=1-smooth((t-5.7)/.45);
     const initialTitle=1-smooth((t-5.5)/.35);
@@ -585,51 +612,22 @@
     const pad=22*s;rr(x+pad,y+18*s,40*s,40*s,12*s,C.pale);icon("chat",x+pad+8*s,y+26*s,25*s);
     text("给自己发消息",x+pad+55*s,y+17*s,21*s,C.ink,600);text("我的聊天记录",x+pad+55*s,y+45*s,13*s,"#92a27e");
     text("概念示意",x+w-pad,y+26*s,12*s,"#94a780",400,"right");line(x+pad,y+77*s,x+w-pad,y+77*s,"#e0e7d5");
-    const items=[
-      {text:"想看《布达佩斯大饭店》",h:34,w:300},
-      {text:"明早给老师发邮件",h:34,w:236},
-      {lines:["各位老师好，我今天汇报的题目是……","首先介绍一下课题的研究背景……"],h:55,w:435},
-      {file:"讲稿_v3.pdf",detail:"PDF · 1.8 MB",h:48,w:228,type:"file"},
-      {photo:true,h:104,w:174},
-      {text:"想补《冰菓》",h:34,w:182},
-      {word:true,h:48,w:350},
-      {text:"今天终于把实验跑通了",h:34,w:280},
-      {file:"project-files.zip",detail:"128 MB",h:48,w:256,type:"folder"}
-    ];
-    if(portrait){
-      const dimensions=[[600,58],[510,58],[660,104],[430,80],[270,170],[350,58],[595,88],[610,58],[470,80]];
-      items.forEach((item,i)=>{item.w=dimensions[i][0]/s;item.h=dimensions[i][1]/s});
-    }
-    const gap=portrait?12:8*s;
-    const visibleHeight=items.reduce((height,m,i)=>height+(m.h*s+gap)*enter(t,messageDelays[i],.4),0);
-    const scroll=portrait?Math.max(0,visibleHeight-(h-155*s)):0;
+    const items=CHAT_ITEMS,slots=chatSlots(x,y,w,h,pad,77*s);
     ctx.save();
-    ctx.beginPath();ctx.rect(x+pad-3,y+87*s,w-pad*2+6,h-139*s);ctx.clip();ctx.translate(0,-scroll);
-    let yy=y+95*s,count=0;
+    ctx.beginPath();ctx.rect(x+pad-3,y+87*s,w-pad*2+6,h-139*s);ctx.clip();
+    let count=0;
     items.forEach((m,i)=>{
-      const p=enter(t,messageDelays[i],.4),bw=Math.min(w-pad*2,m.w*s),hh=m.h*s,xx=x+w-pad-bw;
+      const p=enter(t,messageDelays[i],.4),slot=slots[i],bw=slot.w,hh=slot.h,xx=slot.x,yy=slot.y;
       if(p>.8)count++;
-      if(p<1&&!portrait){
-        const layout=enter(t,0,.8),oldW=w*.74,oldX=x+w-pad-oldW;
-        const oldY=y+h-59-37-(8-i)*51;
-        const px=lerp(oldX,xx,layout),py=lerp(oldY,yy,layout),pw=lerp(oldW,bw,layout),ph=lerp(37,hh,layout);
-        const sourceOrder=[2,5,8,1,4,7,0,3,6];
-        group(1-p,0,0,()=>{
-          rr(px,py,pw,ph,10,"#e6eedc");
-          icon(purposes[sourceOrder[i]][0],px+10,py+(ph-22)/2,22,"#7c9b61");
-          rr(px+44,py+ph*.34,pw*.47,3.5,2,"#b4c79f");
-          rr(px+44,py+ph*.62,pw*.29,3.5,2,"#c8d6b8");
-        });
-      }
-      group(p,(1-p)*38,(1-p)*12,()=>{
-        rr(xx,yy,bw,hh,10*s,m.photo?"#e8eddf":"#e5edd9");
+      chatBubbleFrame(slot);
+      if(p<1)group(1-p,0,0,()=>chatPlaceholder(slot,CHAT_SOURCE_ORDER[i]));
+      group(p,0,0,()=>{
         if(m.photo)photoCrop(xx+4*s,yy+4*s,bw-8*s,hh-8*s,7*s);
         else if(m.file){icon(m.type,xx+12*s,yy+(portrait?23:10*s),portrait?40:26*s,"#7f9a65");text(m.file,xx+(portrait?76:50*s),yy+(portrait?12:6*s),portrait?29:17*s,C.ink,500);text(m.detail,xx+(portrait?76:50*s),yy+(portrait?51:28*s),portrait?20:11*s,"#8c9e77")}
         else if(m.word){text("serendipity",xx+13*s,yy+(portrait?9:6*s),portrait?36:22*s,C.ink,400,"left","Georgia,serif");text("偶然发现美好事物的机缘",xx+13*s,yy+(portrait?56:30*s),portrait?23:11*s,"#788e63")}
         else if(m.lines)lines(m.lines,xx+13*s,yy+(portrait?15:7*s),portrait?27:15*s,"#4d663d",400,1.5);
         else text(m.text,xx+13*s,yy+(portrait?13:8*s),portrait?30:17*s,"#4d663d");
       });
-      yy+=hh+gap;
     });
     ctx.restore();
     rr(x+pad,y+h-38*s,w-pad*2,24*s,6*s,"#edf2e6");text("给自己发消息…",x+pad+12*s,y+h-33*s,10*s,"#98a98a");
