@@ -3,20 +3,20 @@
   "use strict";
 
   const AudioEngine = window.AudioContext || window.webkitAudioContext;
-  // Cue times follow the edited timeline; original-to-edited mapping is in work/pacing-audit.json.
-  const SCENE_TIMES = [4.0, 19.0, 31.0, 39.0, 52.0, 66.0, 74.0, 80.0, 84.0, 90.0, 96.0, 106.0, 122.0, 127.0, 133.4, 138.0, 147.0];
-  const MESSAGE_TIMES = [52.681319, 54.043956, 55.406593, 56.769231, 58.131868, 59.494505, 60.857143, 62.21978, 63.582418];
-  const CHORD_TIMES = [0.4, 19.724138, 39.789474, 67.2, 81.2, 97.2, 128.096552, 148.2];
+  // Cue times follow the accelerated 109-second edit, including individual message arrivals.
+  const SCENE_TIMES = [3.0, 14.0, 23.0, 29.0, 39.0, 46.0, 52.0, 56.2, 59.0, 63.5, 68.0, 75.0, 86.0, 90.0, 94.654545, 98.0, 104.0];
+  const MESSAGE_TIMES = [39.34066, 40.021978, 40.703297, 41.384615, 42.065934, 42.747253, 43.428572, 44.10989, 44.791209];
+  const CHORD_TIMES = [0.3, 14.543104, 29.607288, 46.9, 57.04, 68.84, 90.797492, 105.0];
   const TONES = [523.251, 587.33, 659.255, 783.991, 880];
 
   const cues = [
     ...SCENE_TIMES.map((time, index) => ({ time, type: "paper", index })),
     ...MESSAGE_TIMES.map((time, index) => ({ time, type: "message", index })),
     ...CHORD_TIMES.map((time, index) => ({ time, type: "chord", index })),
-    { time: 77.4, type: "message", index: 2 },
-    { time: 79.25, type: "message", index: 4 },
-    { time: 83.5, type: "resolve", index: 0 },
-    { time: 151.4, type: "resolve", index: 1 },
+    { time: 54.38, type: "message", index: 2 },
+    { time: 55.675, type: "message", index: 4 },
+    { time: 58.65, type: "resolve", index: 0 },
+    { time: 107.666667, type: "resolve", index: 1 },
   ].sort((a, b) => a.time - b.time);
 
   function nextCue(time) {
@@ -31,8 +31,8 @@
   }
 
   class InboxFilmSound {
-    constructor({ duration = 153 } = {}) {
-      this.duration = Number.isFinite(duration) && duration > 0 ? duration : 153;
+    constructor({ duration = 109 } = {}) {
+      this.duration = Number.isFinite(duration) && duration > 0 ? duration : 109;
       this.supported = Boolean(AudioEngine);
       this.muted = false;
       this._context = null;
@@ -258,11 +258,11 @@
       filter.frequency.value = 1800;
       gain.gain.setValueAtTime(0, now);
       gain.gain.linearRampToValueAtTime(0.042, now + 0.009);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.23);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
       oscillator.connect(filter);
       filter.connect(gain);
       gain.connect(this._master);
-      this._track(oscillator, gain, [oscillator, filter, gain], now + 0.26);
+      this._track(oscillator, gain, [oscillator, filter, gain], now + 0.21);
     }
 
     _paper(index) {

@@ -21,7 +21,7 @@
   const notice = $("screen-notice");
   const chapterButtons = [...document.querySelectorAll("[data-seek]")];
   const initialFilm = window.InboxConceptFilm;
-  const duration = Number.isFinite(initialFilm?.duration) ? initialFilm.duration : 153;
+  const duration = Number.isFinite(initialFilm?.duration) ? initialFilm.duration : 109;
   const sound = typeof window.InboxFilmSound === "function"
     ? new window.InboxFilmSound({ duration }) : null;
   let currentTime = 0;
@@ -48,7 +48,7 @@
   };
   const film = () => window.InboxConceptFilm;
   const playing = () => state === "playing";
-  const posterTime = () => Number.isFinite(film()?.posterTime) ? film().posterTime : 2.8;
+  const posterTime = () => Number.isFinite(film()?.posterTime) ? film().posterTime : 2.1;
 
   function showNotice(message) {
     if (!notice) return;
