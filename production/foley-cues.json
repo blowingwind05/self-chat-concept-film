@@ -457,13 +457,13 @@
       "note": "Soft return, not a brand lock-up or triumph"
     },
     {
-      "time": 63.66,
+      "time": 63.575,
       "type": "paper_glide",
       "gain": 0.04,
       "pan": 0.3,
       "pan_end": -0.3,
-      "duration": 0.68,
-      "note": "Complete horizontal page push including header, title, content, cards and footer"
+      "duration": 0.78,
+      "note": "Staggered masked slides: six cards leave and arrive separately while the top bar stays fixed"
     },
     {
       "time": 31.58,

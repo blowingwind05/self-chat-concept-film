@@ -87,10 +87,27 @@
   }
   function pagePart(kind,index,draw){
     if(!pageChange){draw();return}
-    const progress=ease(pageChange.time/.72);
-    // Both complete compositions travel as pages, without crossfading, card
-    // morphs or overlapping text from two different layouts.
-    group(1,pageChange.mode==="in"?W*(1-progress):-W*progress,0,draw);
+    if(kind==="header")return;
+    const incoming=pageChange.mode==="in";
+    const delay=incoming
+      ? {title:.18,description:.26,card:.235+index*.07,footer:.33}[kind]
+      : {title:0,description:0,card:.025+index*.07,footer:.08}[kind];
+    const progress=clamp((pageChange.time-delay)/(incoming?.22:.18));
+    if(incoming?progress<=0:progress>=1)return;
+    let box;
+    if(kind==="card")box=incoming
+      ? {x:131+(index%3)*454,y:340+Math.floor(index/3)*150,w:430,h:126}
+      : {x:167.5+(index%3)*430,y:310+Math.floor(index/3)*182,w:405,h:157};
+    else box={title:{x:95,y:147,w:1410,h:105},description:{x:105,y:249,w:1390,h:58},footer:{x:95,y:710,w:1410,h:140}}[kind];
+    const padding=kind==="card"?11:0,distance=box.h+padding*2;
+    ctx.save();ctx.beginPath();ctx.rect(box.x-padding,box.y-padding,box.w+padding*2,box.h+padding*2);ctx.clip();
+    group(1,0,incoming?distance*(1-ease(progress)):-distance*ease(progress),draw);
+    ctx.restore();
+  }
+  function cardEnter(t,delay,draw,dx=0,dy=18,duration=.26){
+    if(t<=delay)return;
+    const p=enter(t,delay,duration);
+    group(Math.min(1,p*2),(1-p)*dx,(1-p)*dy,draw);
   }
   function reveal(t,delay,draw,dy=32,duration=.9){
     const p=delay<=.15?1:enter(t,delay,duration);group(p,0,(1-p)*dy,draw);
@@ -466,6 +483,10 @@
     return { cx, top: y, width: actualW, height: actualH };
   }
 
+  function loginState(t){
+    const step=Math.min(8,Math.max(0,t-.5)/.78),phase=step%4;
+    return {current:[0,1,2,1][Math.floor(step+1e-9)%4],cx:918+218*(phase<=2?phase:4-phase)};
+  }
   function sceneFriction(t){
     background(false,t);head(3,"为什么想自己做一个 / 现有方案的不便");
     const q=t-7;
@@ -475,22 +496,22 @@
       lines(["微信要自己保留、备份和迁移本地记录；","QQ 的云端漫游，也有期限和内容范围。"],114,549,23,C.muted,400,1.9);
       text("即使是飞书，免费版也只能查看最近 18 个月的记录。",114,699,18,"#8b9b7b");
       const names=["macOS","Windows","Linux"],centres=[918,1136,1354];
-      const current=Math.min(2,Math.floor(Math.max(0,t-.45)/.95));
+      const {current,cx:sliderX}=loginState(t);
       text("微信 / QQ · 同一账号，电脑端仅一台在线",1136,247,21,C.green,500,"center");
-      centres.forEach((cx,i)=>{
+      centres.forEach((cx,i)=>cardEnter(t,.05+i*.08,()=>{
         drawDevice(cx-92,306,184,171,names[i],i===0?"laptop":"desktop",i===current);
         rr(cx-76,513,152,43,10,i===current?C.green:"#e6ecdd");
-        text(i===current?"当前登录":"需要切换",cx,524,18,i===current?"#edf5df":"#8a9d79",400,"center");
-      });
-      line(842,601,1430,601,"#cbd8bd",1.5);
-      const p=clamp((t-.45)/1.9),cx=lerp(918,1354,p);
-      circle(cx,601,5,"#668e4e");
+        text(i===current?"当前登录":"已下线",cx,524,18,i===current?"#edf5df":"#8a9d79",400,"center");
+      }));
+      line(918,601,1354,601,"#cbd8bd",1.5);
+      circle(sliderX,601,5,"#668e4e");
       text("本地留存 · 备份迁移 · 漫游期限",1136,657,22,C.green,500,"center");
     }else{
       lines(["想到什么就想发条消息，","不想先建文档、再分类。"],110,188,53,C.ink,600,1.4);
       paragraph("我本来就比较懒。想到什么直接发条消息，总比打开笔记软件、新建文档、考虑怎么分类方便得多。",114,410,630,26,C.muted,1.85);
       // A single editorial illustration: one sentence inside a new document,
       // with the choice of a folder interrupting the otherwise simple action.
+      cardEnter(q,0,()=>{
       shadow(()=>rr(840,223,646,491,18,"#fafbf6","#d1dbc7"),"#25452314",32,16);
       rr(841,224,644,48,[17,17,0,0],"#edf1e6");
       for(let i=0;i<3;i++)circle(863+i*12,248,3,"#bac8ae");
@@ -519,6 +540,7 @@
       if(crossB>0)line(1144,541,lerp(1144,1056,crossB),lerp(541,629,crossB),"#bb6656",7);
       ctx.restore();
       text("记录示意",1465,689,11,"#a1ae94",400,"right");
+      },18,0);
     }
   }
 
@@ -593,8 +615,10 @@
   }
   function fusionFlightPoints(index,arrive){
     const a={x:276+(index%3)*302,y:340+Math.floor(index/3)*130};
-    const target=fusionLayout(arrive),port={x:target.x,y:target.y+target.h-26};
-    return [a,{x:Math.min(a.x+205,port.x-90),y:a.y},{x:port.x-65,y:a.y},{x:port.x,y:port.y}];
+    const target=fusionLayout(arrive),row=CHAT_SOURCE_ORDER.indexOf(index);
+    const slot=chatSlots(target.x,target.y,target.w,target.h,lerp(16,22,target.zoom),lerp(67,77,target.zoom))[row];
+    const port={x:slot.x+slot.w/2,y:slot.y+slot.h/2};
+    return [a,{x:Math.min(a.x+205,port.x-120),y:a.y},{x:port.x-120,y:port.y},port];
   }
   function fusionThread(x,y,w,h,t,events,zoom){
     const enterWindow=enter(t,.18,.42);
@@ -610,25 +634,13 @@
       const bodyTop=y+header+13,bodyBottom=y+h-59,slots=chatSlots(x,y,w,h,pad,header);
       ctx.save();ctx.beginPath();ctx.rect(x+pad,bodyTop,w-pad*2,bodyBottom-bodyTop+1);ctx.clip();
       const received=events.filter(e=>t>=e.arrive);
-      const occupied=received.length;
-      const last=received[occupied-1],push=last?enter(t,last.arrive,.12):1;
-      const finalBottom=slots[8].y+slots[8].h;
-      const currentBottom=occupied?slots[occupied-1].y+slots[occupied-1].h:finalBottom;
-      const previousBottom=occupied>1?slots[occupied-2].y+slots[occupied-2].h:currentBottom;
-      const stackOffset=finalBottom-lerp(previousBottom,currentBottom,push);
       received.forEach((e,k)=>{
-        const settle=enter(t,e.arrive,.12),slot={...slots[k],y:slots[k].y+stackOffset};
-        group(settle,0,0,()=>{chatBubbleFrame(slot);chatPlaceholder(slot,e.index)});
+        const slot=slots[k];
+        chatBubbleFrame(slot);chatPlaceholder(slot,e.index);
       });
       ctx.restore();
       rr(x+pad,y+h-38,w-pad*2,24,6,"#edf2e6");
       text("给自己发消息…",x+pad+lerp(10,12,zoom),y+h-33,lerp(9,10,zoom),"#98a98a");
-      // The short illuminated line is the only shared entrance.
-      const hit=events.reduce((v,e)=>Math.max(v,1-clamp(Math.abs(t-e.arrive)/.18)),0);
-      group(hit*.9,0,0,()=>{
-        line(x-1,y+h-39,x-1,y+h-13,"#8ab065",3);
-        circle(x-1,y+h-26,8,null,"#a8c88b",1);
-      });
     });
   }
   function scenePurposes(){
@@ -652,23 +664,33 @@
         text(label,p.x+source.w/2,p.y+71,23,"#4b653d",400,"center");
       });
     });
+    // Paint the receiving surface before the flights, so a card crosses its
+    // border visibly and lands in its own row instead of vanishing at an edge.
+    fusionThread(x,y,w,h,t,events,zoom);
     // Right column leaves first, so later rows cross vacated cells rather than
     // covering labels that are still being read. At most two pieces share a lane.
     events.forEach(e=>{
       const flight=clamp((t-e.start-.15)/1.65);
-      if(t<e.start+.15||t>e.arrive+.08)return;
+      if(t<e.start+.15||t>=e.arrive)return;
       const s=positions[e.index],points=fusionFlightPoints(e.index,e.arrive);
       const curveProgress=fusionParameterAtDistance(points,flight),p=fusionBezier(...points,curveProgress);
-      const into=1-smooth((flight-.83)/.17),appearance=enter(t,e.start+.15,.15),width=lerp(202,105,smooth((flight-.65)/.35)),height=lerp(51,28,flight);
-      group(appearance*into,0,0,()=>{
-        fusionPath(points,curveProgress,"#a2bd89",.45);
-        shadow(()=>rr(p.x-width/2,p.y-height/2,width,height,9,C.white,"#b8cea1"),"#62804312",12,6);
-        icon(purposes[e.index][0],p.x-width/2+13,p.y-11,22,"#719650");
-        rr(p.x-width/2+47,p.y-4,width*.45,3.5,2,"#b0c49b");
-        rr(p.x-width/2+47,p.y+5,width*.28,3.5,2,"#cedbbf");
+      const row=order.indexOf(e.index),target=fusionLayout(e.arrive);
+      const targetSlot=chatSlots(target.x,target.y,target.w,target.h,lerp(16,22,target.zoom),lerp(67,77,target.zoom))[row];
+      const morph=smooth((flight-.7)/.3),appearance=enter(t,e.start+.15,.15);
+      const width=lerp(202,targetSlot.w,morph),height=lerp(51,targetSlot.h,morph);
+      const slot={x:p.x-width/2,y:p.y-height/2,w:width,h:height,r:lerp(9,targetSlot.r,morph),sx:width/CHAT_ITEMS[row].w,sy:height/CHAT_ITEMS[row].h,index:row};
+      group(appearance,0,0,()=>{
+        if(t<4.35)fusionPath(points,curveProgress,"#a2bd89",.45);
+        rr(slot.x,slot.y,width,height,slot.r,C.white);
+        group(1-morph,0,0,()=>{
+          shadow(()=>rr(slot.x,slot.y,width,height,slot.r,null,"#b8cea1"),"#62804312",12,6);
+          icon(purposes[e.index][0],slot.x+13,p.y-11,22,"#719650");
+          rr(slot.x+47,p.y-4,width*.45,3.5,2,"#b0c49b");
+          rr(slot.x+47,p.y+5,width*.28,3.5,2,"#cedbbf");
+        });
+        group(morph,0,0,()=>{chatBubbleFrame(slot);chatPlaceholder(slot,e.index)});
       },1,p.x,p.y,(flight<.8?Math.sin(flight*Math.PI)*.035:0)*(s.y<500?1:-1));
     });
-    fusionThread(x,y,w,h,t,events,zoom);
     group(enter(t,.7,.3)*(1-smooth((t-4.25)/.35)),0,0,()=>subtitle(["不需要提前分类，直接发送。"]));
     const finalTitle=enter(t,4.35,.35);
     group(finalTitle,0,(1-finalTitle)*25,()=>{
@@ -767,18 +789,23 @@
     ctx.save();ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();draw();ctx.restore();
   }
   function organizeSlideTitle(progress){
-    text(progress<.5?"把普通消息，整理成信息。":"整理后的个人信息",800,162,progress<.5?59:62,C.ink,600,"center");
+    const p=smooth((progress-.2)/.6);
+    organizeClip(100,145,1400,100,()=>{
+      if(p<1)text("把普通消息，整理成信息。",800,162-p*100,59,C.ink,600,"center");
+      if(p>0)text("整理后的个人信息",800,162+(1-p)*100,62,C.ink,600,"center");
+    });
   }
-  function organizeSourceShell(x,source,visible){
+  function organizeSourceShell(x,source,visible,t,delay){
     // The source text leaves before either result reaches its former position.
-    organizeClip(x,297,635,365*visible,()=>{
+    cardEnter(t,delay,()=>organizeClip(x,297,635,365*visible,()=>{
       rr(x,297,635,365,20,"#f9fbf3","#d4dfc6");
       text("原始消息",x+26,322,16,"#95a482");
       text(source,x+26,364,28,C.ink);
       ctx.save();ctx.translate(x+317,457);ctx.rotate(Math.PI/2);icon("arrow",-15,-15,30,"#8eaa74");ctx.restore();
-    });
+    }),0,20,.35);
   }
   function organizeMovingResult(item,t,progress){
+    cardEnter(t,item.delay+1.85,()=>{
     const targetX=167.5+item.index*430;
     const x=lerp(item.x,targetX,progress),y=lerp(502,310,progress);
     const w=lerp(591,405,progress),h=lerp(130,157,progress);
@@ -803,6 +830,7 @@
         text(item.category,x+30,y+90,26,C.green,500);
       }
     });
+    },0,16,.35);
   }
   function organizeNewView(index,t){
     const p=enter(t,11.62+(index-2)*.16,.6);
@@ -822,7 +850,7 @@
     ];
     pagePart("title",0,()=>organizeSlideTitle(progress));
     if(sourceVisible>0){
-      examples.forEach(item=>organizeSourceShell(item.x-22,item.source,sourceVisible));
+      examples.forEach(item=>organizeSourceShell(item.x-22,item.source,sourceVisible,t,item.delay));
     }
     // The extracted cards are the same objects before and after the change.
     // Their visible title settles into a small example caption first; only then
@@ -930,8 +958,10 @@
     clipSwap(t,cuts,{x:109,y:450,w:690,h:157},i=>lines(scripts[i],114,459,25,C.muted,400,1.95));
     clipSwap(t,cuts,{x:830,y:196,w:671,h:530},(i,q)=>{
       if(i===0){
+        cardEnter(q,.02,()=>{
         shadow(()=>rr(945,210,480,502,18,C.white,"#d4dfc7"));photoCrop(965,230,440,401,10);
         text("黑白建筑摄影",975,655,23,C.green,500);text("原案中的审美素材示例",975,691,15,"#90a27d");
+        },0,16,.35);
       }else if(i===1){
         storyPanel("书影音清单",q);storyBubble("想看《布达佩斯大饭店》",918,350,497,"电影 · 想看",q,0);
         storyBubble("想补《冰菓》",1060,493,355,"想补的番",q,.5);
@@ -967,15 +997,15 @@
     background(false,t);pagePart("header",0,()=>head(8,"希望完善的常用操作"));
     const cuts=[0,10],phase=t<10?0:1,q=phase?t-10:t;
     const items=[["截图粘贴","文件拖放","上传进度","文件预览","复制粘贴","消息搜索"],["增量拉取","手动刷新","离线缓存","历史检索","备份恢复","完整数据导出"]];
-    pagePart("title",0,()=>clipSwap(t,cuts,{x:105,y:148,w:1390,h:100},i=>text(["消息与文件传输","完整历史漫游与长期保存"][i],110,165,i?57:61,C.ink,600),"cut",.5));
-    pagePart("description",0,()=>clipSwap(t,cuts,{x:110,y:252,w:1380,h:52},i=>text(["文字、图片、截图、链接与各类文件。","新设备登录，找回全部历史内容，不依赖旧设备在线。"][i],114,260,i?26:27,C.muted)));
+    pagePart("title",0,()=>clipSwap(t,cuts,{x:105,y:148,w:1390,h:100},i=>text(["消息与文件传输","完整历史漫游与长期保存"][i],110,165,i?57:61,C.ink,600),"y",.35));
+    pagePart("description",0,()=>clipSwap(t,cuts,{x:110,y:252,w:1380,h:52},i=>text(["文字、图片、截图、链接与各类文件。","新设备登录，找回全部历史内容，不依赖旧设备在线。"][i],114,260,i?26:27,C.muted),"y",.35));
     capabilityGrid(items[phase],q,340,false,true,phase?items[0]:null);
     pagePart("footer",0,()=>clipSwap(t,cuts,{x:100,y:711,w:1400,h:131},i=>{
       if(i===0){
         lines(["文案、面试稿、Presentation 稿件和代码片段，","也希望提供方便的编辑、阅读和跨设备使用体验。"],800,722,23,"#7d936a",400,1.8,"center");
         text("尤其重视桌面端的输入、文件操作、系统集成和 UI 渲染质量。",800,812,20,"#879d74",400,"center");
       }else subtitle(["数据完整性优先于毫秒级即时同步。"]);
-    },"cut",.5));
+    },"y",.35));
   }
 
   // One account shares a centred trunk with three distinct client sessions.
@@ -1062,7 +1092,7 @@
       if(q>1.4)packet(path,transferPhase(16.4,.65),"#b6d48b");
       reveal(q,.7,()=>{text("HTTPS",1080,403,23,active===0?"#d5e7b6":"#87ac6d",500,"center");text("传输加密",1080,494,17,"#8eb475",400,"center")});
       const modules=[{y:382,label:"访问控制",focus:active===1},{y:508,label:"限流与防护",focus:active===2}];
-      modules.forEach(m=>{rr(1195,m.y,275,88,12,m.focus?"#50713e":"#35563a",m.focus?"#b4d18b":"#5c7d48",m.focus?2:1);text(m.label,1332,m.y+27,25,m.focus?"#ebf3d8":"#9fbe87",m.focus?500:400,"center")});
+      modules.forEach((m,i)=>cardEnter(q,.65+i*.18,()=>{rr(1195,m.y,275,88,12,m.focus?"#50713e":"#35563a",m.focus?"#b4d18b":"#5c7d48",m.focus?2:1);text(m.label,1332,m.y+27,25,m.focus?"#ebf3d8":"#9fbe87",m.focus?500:400,"center")},16,0,.3));
       subtitle(["基础安全从第一阶段建设，具体方案需要专门研究与验证。"],true);
     }
 
@@ -1142,10 +1172,11 @@
   }
   function renderPageChange(time){
     const next=scenes.find(s=>s.draw===sceneFeatures),previous=scenes[scenes.indexOf(next)-1];
-    const start=next.start-.36;
-    if(time<start||time>=start+.72)return false;
+    const start=next.start-.45;
+    if(time<start||time>=start+.90)return false;
     const savedScene=activeScene,savedLocal=motionLocalTime;
     background(false,time);
+    head(0,time<next.start?"AI 整理的几种典型用法":"希望完善的常用操作");
     ctx.save();ctx.beginPath();ctx.rect(0,0,W,H);ctx.clip();
     try{
       pageChange={mode:"out",time:time-start};
